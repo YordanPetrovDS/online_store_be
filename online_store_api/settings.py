@@ -1,14 +1,19 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 from online_store_api.utils import is_production, is_test
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = os.getenv("DEBUG")
 APP_ENVIRONMENT = os.getenv("APP_ENVIRONMENT")
 SECRET_KEY = os.getenv("SECRET_KEY")
-ALLOWED_HOSTS = [h for h in os.getenv("ALLOWED_HOSTS").split(", ")]
-CORS_ALLOWED_ORIGINS = [h for h in os.getenv("CORS_ALLOWED_ORIGINS").split(", ")]
+
+ALLOWED_HOSTS = []
+CORS_ALLOWED_ORIGINS = [os.getenv("CORS_ALLOWED_ORIGINS")]
 
 DJANGO_APPS = (
     "django.contrib.admin",
@@ -23,6 +28,7 @@ THIRD_PARTY_APPS = (
     "rest_framework",
     "django_filters",
     "corsheaders",
+    "knox",
 )
 
 PROJECT_APPS = (
@@ -45,8 +51,9 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.BasicAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
+        # "rest_framework.authentication.BasicAuthentication",
+        # "rest_framework.authentication.TokenAuthentication",
+        "knox.auth.TokenAuthentication",
     ],
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
 }
