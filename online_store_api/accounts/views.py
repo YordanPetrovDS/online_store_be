@@ -1,14 +1,12 @@
-from django.contrib.auth import get_user_model, login
-from knox.models import AuthToken
-from knox.views import LoginView as KnoxLoginView
+from django.contrib.auth import get_user_model
 from rest_framework import generics as api_generic_views
-from rest_framework import permissions, status
-from rest_framework.authtoken.serializers import AuthTokenSerializer
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
+from rest_framework import views as api_views
+from rest_framework.authtoken import views as auth_views
+from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 
 from online_store_api.accounts.serializers import (
-    ChangePasswordSerializer,
     CreateUserSerializer,
     UserSerializer,
 )
@@ -18,63 +16,56 @@ UserModel = get_user_model()
 
 class RegisterView(api_generic_views.GenericAPIView):
     serializer_class = CreateUserSerializer
+    permission_classes = [
+        permissions.AllowAny,
+    ]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+        token = Token.objects.get_or_create(user=user)[0]
         return Response(
             {
                 "user": UserSerializer(
                     user, context=self.get_serializer_context()
                 ).data,
-                "token": AuthToken.objects.create(user)[1],
+                "token": token.key,
             }
         )
 
 
-class LoginView(KnoxLoginView):
-    permission_classes = (permissions.AllowAny,)
+class LoginView(auth_views.ObtainAuthToken):
+    permission_classes = [
+        permissions.AllowAny,
+    ]
 
-    def post(self, request, format=None):
-        serializer = AuthTokenSerializer(data=request.data)
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
-        login(request, user)
-        return super(LoginView, self).post(request, format=None)
-
-
-class ChangePasswordView(api_generic_views.UpdateAPIView):
-    """
-    An endpoint for changing password.
-    """
-
-    serializer_class = ChangePasswordSerializer
-    model = UserModel
-    permission_classes = (IsAuthenticated,)
-
-    def get_object(self, queryset=None):
-        obj = self.request.user
-        return obj
-
-    def update(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            # Check old password
-            if not self.object.check_password(serializer.data.get("old_password")):
-                return Response(
-                    {"old_password": ["Wrong password."]},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            # set_password also hashes the password that the user will get
-            self.object.set_password(serializer.data.get("new_password"))
-            self.object.save()
-            response = {
-                "status": "success",
-                "code": status.HTTP_200_OK,
-                "message": "Password updated successfully",
-                "data": [],
+        token = Token.objects.get_or_create(user=user)[0]
+        return Response(
+            {
+                "token": token.key,
+                "is_admin": user.is_staff,
             }
-            return Response(response)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        )
+
+
+class LogoutView(api_views.APIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+
+    @staticmethod
+    def __perform_logout(request):
+        token = Token.objects.get(user=request.user)
+        token.delete()
+        return Response({"message": "You have logged out"})
+
+    def get(self, request):
+        return self.__perform_logout(request)
+
+    def post(self, request):
+        return self.__perform_logout(request)
