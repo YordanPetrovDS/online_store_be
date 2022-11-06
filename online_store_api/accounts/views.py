@@ -6,33 +6,17 @@ from rest_framework.authtoken import views as auth_views
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 
-from online_store_api.accounts.serializers import (
-    CreateUserSerializer,
-    UserSerializer,
-)
+from online_store_api.accounts.serializers import CreateUserSerializer
 
 UserModel = get_user_model()
 
 
-class RegisterView(api_generic_views.GenericAPIView):
+class RegisterView(api_generic_views.CreateAPIView):
+    queryset = UserModel.objects.all()
     serializer_class = CreateUserSerializer
     permission_classes = [
         permissions.AllowAny,
     ]
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        token = Token.objects.get_or_create(user=user)[0]
-        return Response(
-            {
-                "user": UserSerializer(
-                    user, context=self.get_serializer_context()
-                ).data,
-                "token": token.key,
-            }
-        )
 
 
 class LoginView(auth_views.ObtainAuthToken):

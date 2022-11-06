@@ -2,20 +2,15 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import password_validation as validators
 from django.core import exceptions
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 
 UserModel = get_user_model()
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserModel
-        fields = ("id", "username", "email")
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = (UserModel.USERNAME_FIELD, "password")
+        fields = ("id", UserModel.USERNAME_FIELD, "password", "email")
 
     # Fix issue with password in plain text
     def create(self, validate_data):
@@ -43,14 +38,6 @@ class CreateUserSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         result = super().to_representation(instance)
         result.pop("password")
+        token = Token.objects.get(user=instance)
+        result["token"] = token.key
         return result
-
-
-class ChangePasswordSerializer(serializers.Serializer):
-    model = UserModel
-
-    """
-    Serializer for password change endpoint.
-    """
-    old_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True)

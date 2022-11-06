@@ -15,3 +15,5 @@ router.register(r"order-product", OrderProductViewSet)
 urlpatterns = [
     path("", include(router.urls)),
 ]
+
+import online_store_api.main.signals
