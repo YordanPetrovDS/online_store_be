@@ -7,5 +7,3 @@ urlpatterns = (
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
 )
-
-import online_store_api.accounts.signals

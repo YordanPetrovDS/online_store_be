@@ -27,8 +27,8 @@ class Order(models.Model):
     date = models.DateField(default=datetime.datetime.now().strftime("%Y-%m-%d"))
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f"id: {self.id} date: {self.date} - user: {self.user}"
+    # def __str__(self):
+    #     return f"id: {self.id} date: {self.date} - user: {self.user}"
 
 
 class OrderProduct(models.Model):
@@ -42,10 +42,6 @@ class OrderProduct(models.Model):
         max_digits=PRICE_MAX_DIGITS,
         decimal_places=PRICE_DECIMALS_PLACES,
     )
-
-    # def save(self, *args, **kwargs):
-    #     self.price = self.product.price
-    #     super().save(*args, **kwargs)
 
     def total_price(self):
         return self.price * self.quantity
