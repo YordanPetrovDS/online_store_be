@@ -1,10 +1,11 @@
 from calendar import month_name
 
 from django_filters import rest_framework as filters
-from rest_framework import permissions, status, viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
 from rest_framework import filters as drf_filters
+from rest_framework import permissions, serializers, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.response import Response
 
 from online_store_api.main.filters import (
     OrderFilter,
@@ -23,14 +24,15 @@ class DefaultsMixin(object):
     """Default settings for view authentication, permissions, filtering and pagination."""
 
     permission_classes = [permissions.IsAuthenticated]
-    paginate_by = 25
+    filter_backends = (filters.DjangoFilterBackend,)
+    paginate_by = 5
     paginate_by_param = "page_size"
     max_paginate_by = 100
-    filter_backends = (filters.DjangoFilterBackend,)
 
 
 class ProductViewSet(DefaultsMixin, viewsets.ModelViewSet):
     queryset = Product.objects.all().order_by("id")
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
     serializer_class = ProductSerializer
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
     filterset_class = ProductFilter
@@ -40,38 +42,52 @@ class ProductViewSet(DefaultsMixin, viewsets.ModelViewSet):
 class OrderViewSet(DefaultsMixin, viewsets.ModelViewSet):
     queryset = Order.objects.all().order_by("id")
     serializer_class = OrderSerializer
-    filter_backends = filters.DjangoFilterBackend
     filterset_class = OrderFilter
-
-    @staticmethod
-    def __sum_of_all_products_prices(products):
-        return sum(product.total_price() for product in products)
 
     @action(methods=["get"], detail=False)
     def stats(self, request):
         metric_flt = {
             "count": len,
-            "price": self.__sum_of_all_products_prices,
+            "price": lambda x: sum(el.total_price() for el in x),
         }
-        metric = request.query_params.get("metric", None)
+        try:
+            date_start, date_end, metric = (
+                request.query_params["date_start"],
+                request.query_params["date_end"],
+                request.query_params["metric"],
+            )
+        except Exception:
+            raise serializers.ValidationError(
+                detail={
+                    "Error": "There is/are missing filter field - required filter fields are 'date_start', 'date_end' and 'metric'"
+                }
+            )
+        if metric not in ["price", "count"]:
+            raise serializers.ValidationError(
+                detail={
+                    "Error": "Incorrect value for filter field 'metric', the value should be one of 'count' or 'price'"
+                },
+            )
 
-        if not self.queryset:
+        orders_queryset = self.get_queryset()
+
+        if not orders_queryset:
             return Response(
                 status=status.HTTP_404_NOT_FOUND,
                 data={"message": "There are no any orders for this period."},
             )
 
-        orders = {}
+        orders_per_month = {}
         result = []
-        for order in self.queryset:
+        for order in orders_queryset:
             ordered_products = order.orderproduct_set.all()
             month = f"{order.date.year} {month_name[order.date.month]}"
-            if month not in orders:
-                orders[month] = []
-            orders[month] += [*ordered_products]
+            if month not in orders_per_month:
+                orders_per_month[month] = []
+            orders_per_month[month] += [*ordered_products]
 
-        for month in orders:
-            value = metric_flt[metric](orders[month])
+        for month in orders_per_month:
+            value = metric_flt[metric](orders_per_month[month])
             result.append(
                 {
                     "month": month,
@@ -83,23 +99,43 @@ class OrderViewSet(DefaultsMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.action == "stats":
-            date_start = self.request.query_params.get("date_start", None)
-            date_end = self.request.query_params.get("date_end", None)
-            queryset = queryset.filter(date__range=[date_start, date_end])
-        if not self.request.user.is_staff:
-            queryset = queryset.filter(user=self.request.user)
+        if self.action in ["list", "stats"]:
+            if not self.request.user.is_staff:
+                queryset = queryset.filter(user=self.request.user.id)
+            if self.action == "stats":
+                date_start = self.request.query_params.get("date_start", None)
+                date_end = self.request.query_params.get("date_end", None)
+                queryset = queryset.filter(date__range=[date_start, date_end])
         return queryset
+
+    def get_object(self):
+        the_object = super().get_object()
+        if the_object.user != self.request.user:
+            raise PermissionDenied
+        return the_object
 
 
 class OrderProductViewSet(DefaultsMixin, viewsets.ModelViewSet):
     queryset = OrderProduct.objects.all().order_by("id")
     serializer_class = OrderProductSerializer
-    filter_backends = filters.DjangoFilterBackend
     filterset_class = OrderProductFilter
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(
+            status=status.HTTP_204_NO_CONTENT,
+            data={"message": "Instance is successfully deleted"},
+        )
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if not self.request.user.is_staff:
-            queryset = queryset.filter(user=self.request.user)
+        if self.action == "list" and not self.request.user.is_staff:
+            queryset = queryset.filter(order__user=self.request.user)
         return queryset
+
+    def get_object(self):
+        the_object = super().get_object()
+        if the_object.order.user != self.request.user:
+            raise PermissionDenied
+        return the_object

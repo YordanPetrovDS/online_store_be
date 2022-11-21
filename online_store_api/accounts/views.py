@@ -7,7 +7,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 
 from online_store_api.accounts.serializers import CreateUserSerializer
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login
 
 UserModel = get_user_model()
 
@@ -25,6 +25,7 @@ class LoginView(auth_views.ObtainAuthToken):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
+        login(request, user=user)
         token = Token.objects.get_or_create(user=user)[0]
         return Response(
             status=status.HTTP_201_CREATED,
