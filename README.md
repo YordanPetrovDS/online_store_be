@@ -29,6 +29,7 @@
 ```shell
 > python manage.py loaddata additional_materials/fixtures/dump.json
 ```
+- [Online Store API fixtures](https://github.com/YordanPetrovDS/OnlineStoreAPI/tree/main/additional_materials/fixtures)
 
 ## Running API Server
 
@@ -36,21 +37,11 @@
 > python manage.py runserver
 ```
 
-#### Loading fixtures:
-
-```shell
-> python manage.py loaddata additional_materials/fixtures/dump.json
-```
-
 ## Thunder Client Collection
 
-<!-- ![accounts](additional_materials/screenshots/thunder_client_accounts.JPG)
-![product](additional_materials/screenshots/thunder_client_product.JPG)
-![order_order-product](additional_materials/screenshots/thunder_client_order_order-product.JPG)
-![stats](additional_materials/screenshots/thunder_client_stats.JPG) -->
 ![TC Collection](additional_materials/screenshots/TC_collection.JPG)
 
-- [Online Store API Collection](https://github.com/YordanPetrovDS/OnlineStoreAPI/additional_materials/thunder_client)
+- [Online Store API Collection](https://github.com/YordanPetrovDS/OnlineStoreAPI/tree/main/additional_materials/thunder_client)
 
 ## Sample Screenshots
 
