@@ -6,7 +6,7 @@ from rest_framework.authtoken import views as auth_views
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 
-from online_store_api.accounts.serializers import CreateUserSerializer
+from .serializers import CreateUserSerializer
 from django.contrib.auth import logout, login
 
 UserModel = get_user_model()

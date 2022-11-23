@@ -22,6 +22,9 @@ class Product(models.Model):
     def __str__(self):
         return f"{self.title}"
 
+    class Meta:
+        ordering = ["id"]
+
 
 class Order(models.Model):
     date = models.DateField(default=datetime.datetime.now().strftime("%Y-%m-%d"))
@@ -29,6 +32,9 @@ class Order(models.Model):
 
     def __str__(self):
         return f"id: {self.id} date: {self.date} - user: {self.user}"
+
+    class Meta:
+        ordering = ["id"]
 
 
 class OrderProduct(models.Model):
@@ -47,6 +53,7 @@ class OrderProduct(models.Model):
         return self.price * self.quantity
 
     def __str__(self):
-        return (
-            f"product: {self.product} - quantity: {self.quantity} - price: {self.price}"
-        )
+        return f"product: {self.product} - quantity: {self.quantity} - total price: {self.total_price()}"
+
+    class Meta:
+        ordering = ["id"]

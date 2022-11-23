@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from online_store_api.main.models import Order, OrderProduct, Product
+from .models import Order, OrderProduct, Product
 
 
 class ProductFilter(filters.FilterSet):

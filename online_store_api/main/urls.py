@@ -1,11 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from online_store_api.main.views import (
-    OrderProductViewSet,
-    OrderViewSet,
-    ProductViewSet,
-)
+from .views import OrderProductViewSet, OrderViewSet, ProductViewSet
 
 router = routers.DefaultRouter()
 router.register(r"product", ProductViewSet)

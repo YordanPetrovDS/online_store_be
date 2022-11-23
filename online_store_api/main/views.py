@@ -3,36 +3,23 @@ from datetime import datetime
 
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
-from rest_framework import permissions, serializers, status, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 
-from online_store_api.main.filters import (
-    OrderFilter,
-    OrderProductFilter,
-    ProductFilter,
-)
-from online_store_api.main.models import Order, OrderProduct, Product
-from online_store_api.main.serializers import (
+from ..common.mixins import DefaultsMixin
+from ..common.validators import validate_query_param
+from .filters import OrderFilter, OrderProductFilter, ProductFilter
+from .models import Order, OrderProduct, Product
+from .serializers import (
     OrderProductSerializer,
     OrderSerializer,
     ProductSerializer,
 )
 
 
-class DefaultsMixin(object):
-    """Default settings for view authentication, permissions, filtering and pagination."""
-
-    permission_classes = [permissions.IsAuthenticated]
-    filter_backends = (filters.DjangoFilterBackend,)
-    paginate_by = 5
-    paginate_by_param = "page_size"
-    max_paginate_by = 100
-
-
 class ProductViewSet(DefaultsMixin, viewsets.ModelViewSet):
-    queryset = Product.objects.all().order_by("id")
+    queryset = Product.objects.all()
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
     serializer_class = ProductSerializer
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
@@ -41,7 +28,7 @@ class ProductViewSet(DefaultsMixin, viewsets.ModelViewSet):
 
 
 class OrderViewSet(DefaultsMixin, viewsets.ModelViewSet):
-    queryset = Order.objects.all().order_by("id")
+    queryset = Order.objects.all()
     serializer_class = OrderSerializer
     filterset_class = OrderFilter
 
@@ -51,24 +38,12 @@ class OrderViewSet(DefaultsMixin, viewsets.ModelViewSet):
             "count": lambda x: sum(el.quantity for el in x),
             "price": lambda x: sum(el.total_price() for el in x),
         }
-        try:
-            date_start, date_end, metric = (
-                request.query_params["date_start"],
-                request.query_params["date_end"],
-                request.query_params["metric"],
-            )
-        except Exception:
-            raise serializers.ValidationError(
-                detail={
-                    "Error": "There is/are missing filter field/s - required filter fields are 'date_start', 'date_end' and 'metric'"
-                }
-            )
-        if metric not in ["price", "count"]:
-            raise serializers.ValidationError(
-                detail={
-                    "Error": "Incorrect value for filter field 'metric', the value should be one of 'count' or 'price'"
-                },
-            )
+
+        date_start, date_end, metric = (
+            validate_query_param("date_start", request),
+            validate_query_param("date_end", request),
+            validate_query_param("metric", request, ["price", "count"]),
+        )
 
         orders_queryset = self.get_queryset()
 
@@ -103,7 +78,8 @@ class OrderViewSet(DefaultsMixin, viewsets.ModelViewSet):
                 }
             )
 
-        return Response(status=status.HTTP_200_OK, data=result)
+        page = self.paginate_queryset(result)
+        return self.get_paginated_response(page)
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -116,17 +92,9 @@ class OrderViewSet(DefaultsMixin, viewsets.ModelViewSet):
                 queryset = queryset.filter(date__range=[date_start, date_end])
         return queryset
 
-    def get_object(self):
-        the_object = super().get_object()
-        if the_object.user != self.request.user and (
-            not self.request.user.is_staff or self.action != "retrieve"
-        ):
-            raise PermissionDenied
-        return the_object
-
 
 class OrderProductViewSet(DefaultsMixin, viewsets.ModelViewSet):
-    queryset = OrderProduct.objects.all().order_by("id")
+    queryset = OrderProduct.objects.all()
     serializer_class = OrderProductSerializer
     filterset_class = OrderProductFilter
 
@@ -143,11 +111,3 @@ class OrderProductViewSet(DefaultsMixin, viewsets.ModelViewSet):
         if self.action == "list" and not self.request.user.is_staff:
             queryset = queryset.filter(order__user=self.request.user)
         return queryset
-
-    def get_object(self):
-        the_object = super().get_object()
-        if the_object.order.user != self.request.user and (
-            not self.request.user.is_staff or self.action != "retrieve"
-        ):
-            raise PermissionDenied
-        return the_object

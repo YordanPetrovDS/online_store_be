@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import NotAcceptable
 
-from online_store_api.main.models import Order, OrderProduct, Product
+from .models import Order, OrderProduct, Product
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -89,4 +89,6 @@ class OrderProductSerializer(serializers.ModelSerializer):
         result = super().to_representation(instance)
         result["price"] = instance.price
         result["total_price"] = instance.total_price()
+        result["order_date"] = instance.order.date
+        result["product_name"] = instance.product.title
         return result

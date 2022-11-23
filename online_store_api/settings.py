@@ -30,6 +30,7 @@ THIRD_PARTY_APPS = (
     "corsheaders",
     "rangefilter",
     "rest_framework.authtoken",
+    "drf_yasg",
 )
 
 PROJECT_APPS = (

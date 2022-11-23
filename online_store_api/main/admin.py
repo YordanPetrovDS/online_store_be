@@ -1,11 +1,7 @@
 from django.contrib import admin
+from rangefilter.filters import DateRangeFilter, NumericRangeFilter
 
-from online_store_api.main.models import Order, OrderProduct, Product
-from rangefilter.filters import (
-    DateRangeFilter,
-    DateTimeRangeFilter,
-    NumericRangeFilter,
-)
+from .models import Order, OrderProduct, Product
 
 
 @admin.register(Product)
@@ -27,4 +23,10 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(OrderProduct)
 class OrderProductAdmin(admin.ModelAdmin):
+    list_filter = (
+        ("quantity", NumericRangeFilter),
+        "order__user",
+        ("order__date", DateRangeFilter),
+    )
+    search_fields = ("product__title",)
     exclude = ("price",)
