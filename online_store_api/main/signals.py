@@ -1,7 +1,7 @@
 from django.db.models import signals
 from django.dispatch import receiver
 
-from online_store_api.main.models import Order, OrderProduct, Product
+from online_store_api.main.models import OrderProduct, Product
 
 
 @receiver(signals.post_save, sender=OrderProduct)

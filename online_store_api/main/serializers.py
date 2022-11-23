@@ -8,7 +8,7 @@ from online_store_api.main.models import Order, OrderProduct, Product
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ["id", "title", "price", "stock", "created_at", "updated_at"]
+        fields = ["id", "title", "price", "stock"]
 
 
 class OrderSerializer(serializers.ModelSerializer):

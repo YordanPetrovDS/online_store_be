@@ -1,0 +1,517 @@
+[
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$390000$wM8FuDWCN29nkmmFkz9YVx$/rpwEhszqN7wMLgSog1HJhC4b2SsWvxtTWC/A/tE48Q=",
+            "last_login": "2022-11-13T20:43:09.329Z",
+            "is_superuser": true,
+            "username": "doncho",
+            "first_name": "",
+            "last_name": "",
+            "email": "doncho@abv.bg",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2022-11-06T22:20:43.858Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$390000$sH8yIDG9Rl3l16onwq9VFk$0V6KNO7G7IcxifaLw6rRVQOrXavs4Vw030rdPTioS54=",
+            "last_login": "2022-11-20T16:34:24.361Z",
+            "is_superuser": false,
+            "username": "dakata_gb70",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2022-11-06T23:33:53.049Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$390000$7WGT5pJSSJvQgPFxsmIvtN$WEohm6OcBlfESYJk0SsafRnGsuHxW7Sz0FwqbembRz0=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "YordanPetrov",
+            "first_name": "",
+            "last_name": "",
+            "email": "dakatagb1@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2022-11-20T20:39:36.381Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "v7f5nc2jjstfytl0v2uynhc0kyquw4im",
+        "fields": {
+            "session_data": ".eJxVjEEOwiAQRe_C2hCHlg64dN8zEIYZpGpoUtqV8e7apAvd_vfef6kQt7WErckSJlYXZXp1-h0ppofUnfA91tus01zXZSK9K_qgTY8zy_N6uH8HJbbyreEsnbPeGfbkiIkHMYYhE3sADxlzD9Z1HVpIgIwRexEYkEBsdmjU-wMBTTe5:1ownGy:Uiwg2vj89js6mebjvGFtISgeaTJ7-OoVGB0J83Fz6Xo",
+            "expire_date": "2022-12-04T16:34:24.366Z"
+        }
+    },
+    {
+        "model": "authtoken.token",
+        "pk": "0c972e2a58275d292cf492933d35251b51fe3184",
+        "fields": {
+            "user": ["dakata_gb70"],
+            "created": "2022-11-20T15:54:53.893Z"
+        }
+    },
+    {
+        "model": "authtoken.token",
+        "pk": "1a5b25c56ed99ccb05304ec6760b4fbe9ba1f120",
+        "fields": {
+            "user": ["YordanPetrov"],
+            "created": "2022-11-20T20:39:36.384Z"
+        }
+    },
+    {
+        "model": "authtoken.token",
+        "pk": "4f529405084e116d89947c3b1122800cc9e4fe45",
+        "fields": {
+            "user": ["doncho"],
+            "created": "2022-11-06T22:27:06.341Z"
+        }
+    },
+    {
+        "model": "main.product",
+        "pk": 1,
+        "fields": {
+            "title": "Mouse",
+            "price": "11.00",
+            "stock": 67,
+            "created_at": "2022-11-12T13:16:10.370Z",
+            "updated_at": "2022-11-22T23:51:49.419Z"
+        }
+    },
+    {
+        "model": "main.product",
+        "pk": 2,
+        "fields": {
+            "title": "Keyboard",
+            "price": "14.00",
+            "stock": 95,
+            "created_at": "2022-11-12T13:16:24.877Z",
+            "updated_at": "2022-11-22T22:30:38.945Z"
+        }
+    },
+    {
+        "model": "main.product",
+        "pk": 3,
+        "fields": {
+            "title": "Laptop",
+            "price": "1000.00",
+            "stock": 48,
+            "created_at": "2022-11-22T18:25:18.737Z",
+            "updated_at": "2022-11-22T22:29:17.217Z"
+        }
+    },
+    {
+        "model": "main.product",
+        "pk": 4,
+        "fields": {
+            "title": "Smartwatch",
+            "price": "750.00",
+            "stock": 97,
+            "created_at": "2022-11-22T18:26:32.787Z",
+            "updated_at": "2022-11-22T22:30:47.701Z"
+        }
+    },
+    {
+        "model": "main.product",
+        "pk": 5,
+        "fields": {
+            "title": "Monitor",
+            "price": "550.00",
+            "stock": 98,
+            "created_at": "2022-11-22T18:28:43.554Z",
+            "updated_at": "2022-11-22T22:29:41.553Z"
+        }
+    },
+    {
+        "model": "main.product",
+        "pk": 6,
+        "fields": {
+            "title": "Smarthphone",
+            "price": "800.00",
+            "stock": 99,
+            "created_at": "2022-11-22T18:29:43.431Z",
+            "updated_at": "2022-11-22T22:22:35.450Z"
+        }
+    },
+    {
+        "model": "main.product",
+        "pk": 7,
+        "fields": {
+            "title": "E-reader",
+            "price": "250.00",
+            "stock": 149,
+            "created_at": "2022-11-22T18:31:40.028Z",
+            "updated_at": "2022-11-22T22:22:49.893Z"
+        }
+    },
+    {
+        "model": "main.product",
+        "pk": 8,
+        "fields": {
+            "title": "Tablet",
+            "price": "350.00",
+            "stock": 199,
+            "created_at": "2022-11-22T18:32:34.753Z",
+            "updated_at": "2022-11-22T22:23:24.994Z"
+        }
+    },
+    {
+        "model": "main.product",
+        "pk": 9,
+        "fields": {
+            "title": "Printer",
+            "price": "400.00",
+            "stock": 99,
+            "created_at": "2022-11-22T18:33:30.995Z",
+            "updated_at": "2022-11-22T22:23:39.519Z"
+        }
+    },
+    {
+        "model": "main.product",
+        "pk": 11,
+        "fields": {
+            "title": "SSD",
+            "price": "500.00",
+            "stock": 99,
+            "created_at": "2022-11-22T18:56:59.293Z",
+            "updated_at": "2022-11-22T22:24:15.277Z"
+        }
+    },
+    {
+        "model": "main.order",
+        "pk": 4,
+        "fields": {
+            "date": "2022-01-15",
+            "user": ["YordanPetrov"]
+        }
+    },
+    {
+        "model": "main.order",
+        "pk": 5,
+        "fields": {
+            "date": "2022-02-16",
+            "user": ["YordanPetrov"]
+        }
+    },
+    {
+        "model": "main.order",
+        "pk": 6,
+        "fields": {
+            "date": "2022-01-23",
+            "user": ["YordanPetrov"]
+        }
+    },
+    {
+        "model": "main.order",
+        "pk": 7,
+        "fields": {
+            "date": "2022-03-03",
+            "user": ["YordanPetrov"]
+        }
+    },
+    {
+        "model": "main.order",
+        "pk": 8,
+        "fields": {
+            "date": "2022-04-20",
+            "user": ["YordanPetrov"]
+        }
+    },
+    {
+        "model": "main.order",
+        "pk": 9,
+        "fields": {
+            "date": "2022-05-13",
+            "user": ["YordanPetrov"]
+        }
+    },
+    {
+        "model": "main.order",
+        "pk": 10,
+        "fields": {
+            "date": "2022-05-18",
+            "user": ["YordanPetrov"]
+        }
+    },
+    {
+        "model": "main.order",
+        "pk": 11,
+        "fields": {
+            "date": "2022-06-01",
+            "user": ["YordanPetrov"]
+        }
+    },
+    {
+        "model": "main.order",
+        "pk": 12,
+        "fields": {
+            "date": "2022-07-23",
+            "user": ["YordanPetrov"]
+        }
+    },
+    {
+        "model": "main.order",
+        "pk": 13,
+        "fields": {
+            "date": "2022-10-14",
+            "user": ["YordanPetrov"]
+        }
+    },
+    {
+        "model": "main.order",
+        "pk": 14,
+        "fields": {
+            "date": "2022-11-09",
+            "user": ["YordanPetrov"]
+        }
+    },
+    {
+        "model": "main.order",
+        "pk": 15,
+        "fields": {
+            "date": "2022-12-20",
+            "user": ["YordanPetrov"]
+        }
+    },
+    {
+        "model": "main.order",
+        "pk": 16,
+        "fields": {
+            "date": "2022-12-25",
+            "user": ["YordanPetrov"]
+        }
+    },
+    {
+        "model": "main.order",
+        "pk": 17,
+        "fields": {
+            "date": "2022-01-02",
+            "user": ["dakata_gb70"]
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 19,
+        "fields": {
+            "order": 4,
+            "product": 1,
+            "quantity": 1,
+            "price": "11.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 20,
+        "fields": {
+            "order": 4,
+            "product": 2,
+            "quantity": 1,
+            "price": "14.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 21,
+        "fields": {
+            "order": 6,
+            "product": 3,
+            "quantity": 1,
+            "price": "1000.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 22,
+        "fields": {
+            "order": 5,
+            "product": 4,
+            "quantity": 2,
+            "price": "750.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 23,
+        "fields": {
+            "order": 7,
+            "product": 5,
+            "quantity": 1,
+            "price": "550.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 24,
+        "fields": {
+            "order": 8,
+            "product": 6,
+            "quantity": 1,
+            "price": "800.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 25,
+        "fields": {
+            "order": 9,
+            "product": 7,
+            "quantity": 1,
+            "price": "250.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 26,
+        "fields": {
+            "order": 10,
+            "product": 8,
+            "quantity": 1,
+            "price": "350.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 27,
+        "fields": {
+            "order": 10,
+            "product": 9,
+            "quantity": 1,
+            "price": "400.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 28,
+        "fields": {
+            "order": 11,
+            "product": 1,
+            "quantity": 1,
+            "price": "11.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 29,
+        "fields": {
+            "order": 11,
+            "product": 11,
+            "quantity": 1,
+            "price": "500.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 30,
+        "fields": {
+            "order": 12,
+            "product": 1,
+            "quantity": 2,
+            "price": "11.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 31,
+        "fields": {
+            "order": 12,
+            "product": 2,
+            "quantity": 2,
+            "price": "14.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 32,
+        "fields": {
+            "order": 13,
+            "product": 1,
+            "quantity": 1,
+            "price": "11.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 33,
+        "fields": {
+            "order": 13,
+            "product": 3,
+            "quantity": 1,
+            "price": "1000.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 34,
+        "fields": {
+            "order": 14,
+            "product": 5,
+            "quantity": 1,
+            "price": "550.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 35,
+        "fields": {
+            "order": 15,
+            "product": 1,
+            "quantity": 1,
+            "price": "11.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 36,
+        "fields": {
+            "order": 15,
+            "product": 2,
+            "quantity": 1,
+            "price": "14.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 37,
+        "fields": {
+            "order": 16,
+            "product": 2,
+            "quantity": 1,
+            "price": "14.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 38,
+        "fields": {
+            "order": 16,
+            "product": 4,
+            "quantity": 1,
+            "price": "750.00"
+        }
+    },
+    {
+        "model": "main.orderproduct",
+        "pk": 39,
+        "fields": {
+            "order": 17,
+            "product": 1,
+            "quantity": 2,
+            "price": "11.00"
+        }
+    }
+]

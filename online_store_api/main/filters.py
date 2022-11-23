@@ -4,8 +4,8 @@ from online_store_api.main.models import Order, OrderProduct, Product
 
 
 class ProductFilter(filters.FilterSet):
-    price = filters.NumericRangeFilter()
-    stock = filters.NumericRangeFilter()
+    price = filters.RangeFilter()
+    stock = filters.RangeFilter()
 
     class Meta:
         model = Product
@@ -21,8 +21,8 @@ class OrderFilter(filters.FilterSet):
 
 
 class OrderProductFilter(filters.FilterSet):
-    quantity = filters.NumericRangeFilter()
-    price = filters.NumericRangeFilter()
+    quantity = filters.RangeFilter()
+    price = filters.RangeFilter()
 
     class Meta:
         model = OrderProduct

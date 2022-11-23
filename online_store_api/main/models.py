@@ -27,8 +27,8 @@ class Order(models.Model):
     date = models.DateField(default=datetime.datetime.now().strftime("%Y-%m-%d"))
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
 
-    # def __str__(self):
-    #     return f"id: {self.id} date: {self.date} - user: {self.user}"
+    def __str__(self):
+        return f"id: {self.id} date: {self.date} - user: {self.user}"
 
 
 class OrderProduct(models.Model):

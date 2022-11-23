@@ -1,4 +1,5 @@
 from calendar import month_name
+from datetime import datetime
 
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
@@ -47,7 +48,7 @@ class OrderViewSet(DefaultsMixin, viewsets.ModelViewSet):
     @action(methods=["get"], detail=False)
     def stats(self, request):
         metric_flt = {
-            "count": len,
+            "count": lambda x: sum(el.quantity for el in x),
             "price": lambda x: sum(el.total_price() for el in x),
         }
         try:
@@ -59,7 +60,7 @@ class OrderViewSet(DefaultsMixin, viewsets.ModelViewSet):
         except Exception:
             raise serializers.ValidationError(
                 detail={
-                    "Error": "There is/are missing filter field - required filter fields are 'date_start', 'date_end' and 'metric'"
+                    "Error": "There is/are missing filter field/s - required filter fields are 'date_start', 'date_end' and 'metric'"
                 }
             )
         if metric not in ["price", "count"]:
@@ -86,6 +87,13 @@ class OrderViewSet(DefaultsMixin, viewsets.ModelViewSet):
                 orders_per_month[month] = []
             orders_per_month[month] += [*ordered_products]
 
+        orders_per_month = dict(
+            sorted(
+                orders_per_month.items(),
+                key=lambda x: datetime.strptime(x[0], "%Y %B"),
+            )
+        )
+
         for month in orders_per_month:
             value = metric_flt[metric](orders_per_month[month])
             result.append(
@@ -110,7 +118,9 @@ class OrderViewSet(DefaultsMixin, viewsets.ModelViewSet):
 
     def get_object(self):
         the_object = super().get_object()
-        if the_object.user != self.request.user:
+        if the_object.user != self.request.user and (
+            not self.request.user.is_staff or self.action != "retrieve"
+        ):
             raise PermissionDenied
         return the_object
 
@@ -136,6 +146,8 @@ class OrderProductViewSet(DefaultsMixin, viewsets.ModelViewSet):
 
     def get_object(self):
         the_object = super().get_object()
-        if the_object.order.user != self.request.user:
+        if the_object.order.user != self.request.user and (
+            not self.request.user.is_staff or self.action != "retrieve"
+        ):
             raise PermissionDenied
         return the_object
