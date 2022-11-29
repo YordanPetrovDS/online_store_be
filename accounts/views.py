@@ -1,13 +1,13 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login, logout
+from rest_framework import authentication
 from rest_framework import generics as api_generic_views
-from rest_framework import permissions, status, authentication
+from rest_framework import permissions, status
 from rest_framework import views as api_views
 from rest_framework.authtoken import views as auth_views
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 
 from .serializers import CreateUserSerializer
-from django.contrib.auth import logout, login
 
 UserModel = get_user_model()
 

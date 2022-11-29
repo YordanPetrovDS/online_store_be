@@ -1,14 +1,13 @@
-from calendar import month_name
-from datetime import datetime
-
+from django.db.models import CharField, F, Func, Sum, Value
+from django.db.models.functions import Trim, TruncMonth
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from ..common.mixins import DefaultsMixin
-from ..common.validators import validate_query_param
+from common.mixins import DefaultsMixin
+from common.validators import validate_query_param
 from .filters import OrderFilter, OrderProductFilter, ProductFilter
 from .models import Order, OrderProduct, Product
 from .serializers import (
@@ -35,8 +34,8 @@ class OrderViewSet(DefaultsMixin, viewsets.ModelViewSet):
     @action(methods=["get"], detail=False)
     def stats(self, request):
         metric_flt = {
-            "count": lambda x: sum(el.quantity for el in x),
-            "price": lambda x: sum(el.total_price() for el in x),
+            "count": F("orderproduct__quantity"),
+            "price": F("orderproduct__price") * F("orderproduct__quantity"),
         }
 
         date_start, date_end, metric = (
@@ -53,32 +52,25 @@ class OrderViewSet(DefaultsMixin, viewsets.ModelViewSet):
                 data={"message": "There are no any orders for this period."},
             )
 
-        orders_per_month = {}
-        result = []
-        for order in orders_queryset:
-            ordered_products = order.orderproduct_set.all()
-            month = f"{order.date.year} {month_name[order.date.month]}"
-            if month not in orders_per_month:
-                orders_per_month[month] = []
-            orders_per_month[month] += [*ordered_products]
-
-        orders_per_month = dict(
-            sorted(
-                orders_per_month.items(),
-                key=lambda x: datetime.strptime(x[0], "%Y %B"),
+        orders_queryset = (
+            orders_queryset.annotate(
+                month_date=TruncMonth("date"),
+                month=Trim(
+                    Func(
+                        F("date"),
+                        Value("YYYY Month"),
+                        arity=2,
+                        function="to_char",
+                        output_field=CharField(),
+                    )
+                ),
             )
+            .values("month")
+            .annotate(value=Sum(metric_flt[metric]))
+            .order_by("month_date")
         )
 
-        for month in orders_per_month:
-            value = metric_flt[metric](orders_per_month[month])
-            result.append(
-                {
-                    "month": month,
-                    "value": value,
-                }
-            )
-
-        page = self.paginate_queryset(result)
+        page = self.paginate_queryset(orders_queryset)
         return self.get_paginated_response(page)
 
     def get_queryset(self):

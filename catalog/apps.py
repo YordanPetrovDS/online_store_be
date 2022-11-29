@@ -1,9 +1,9 @@
 from django.apps import AppConfig
 
 
-class AuthConfig(AppConfig):
+class MainConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "online_store_api.accounts"
+    name = "catalog"
 
     def ready(self):
         from . import signals

@@ -34,8 +34,8 @@ THIRD_PARTY_APPS = (
 )
 
 PROJECT_APPS = (
-    "online_store_api.accounts",
-    "online_store_api.main",
+    "accounts",
+    "catalog",
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
