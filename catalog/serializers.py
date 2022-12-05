@@ -66,7 +66,7 @@ class OrderProductSerializer(serializers.ModelSerializer):
             )
 
         if validate_data["product"] != instance.product:
-            product_old = instance.product
+            product_old: Product = instance.product
             product_old.stock += instance.quantity
             product_old.save()
             instance.price = product.price

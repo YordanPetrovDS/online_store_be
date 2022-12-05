@@ -21,7 +21,7 @@ class RegisterView(api_generic_views.CreateAPIView):
 class LoginView(auth_views.ObtainAuthToken):
     permission_classes = [permissions.AllowAny]
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]

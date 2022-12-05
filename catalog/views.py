@@ -6,15 +6,15 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from common.mixins import DefaultsMixin
-from common.validators import validate_query_param
-from .filters import OrderFilter, OrderProductFilter, ProductFilter
-from .models import Order, OrderProduct, Product
-from .serializers import (
+from catalog.filters import OrderFilter, OrderProductFilter, ProductFilter
+from catalog.models import Order, OrderProduct, Product
+from catalog.serializers import (
     OrderProductSerializer,
     OrderSerializer,
     ProductSerializer,
 )
+from common.mixins import DefaultsMixin
+from common.validators import validate_query_param
 
 
 class ProductViewSet(DefaultsMixin, viewsets.ModelViewSet):
@@ -38,11 +38,9 @@ class OrderViewSet(DefaultsMixin, viewsets.ModelViewSet):
             "price": F("orderproduct__price") * F("orderproduct__quantity"),
         }
 
-        date_start, date_end, metric = (
-            validate_query_param("date_start", request),
-            validate_query_param("date_end", request),
-            validate_query_param("metric", request, ["price", "count"]),
-        )
+        query_params_list = ["date_start", "date_end", "metric"]
+        metric_choices = ["price", "count"]
+        metric = validate_query_param(query_params_list, request, metric_choices)[2]
 
         orders_queryset = self.get_queryset()
 
