@@ -27,6 +27,13 @@ class OrderViewSetTests(APITestCase):
 
         return user
 
+    def test_create_order__when_user_is_not_auth__should_raise(self):
+        sample_data = {
+            "date": "2022-11-01",
+        }
+        response = self.client.post(reverse("order-list"), sample_data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
     def test_create_order__when_data_is_valid__expect_to_create(self):
 
         user = self._create_user_and_login(self.VALID_USER_DATA)
@@ -42,6 +49,13 @@ class OrderViewSetTests(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["date"], sample_data["date"])
+
+    def test_update_order__when_user_is_not_auth__should_raise(self):
+        sample_data = {
+            "date": "2022-11-01",
+        }
+        response = self.client.put(reverse("order-list"), sample_data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_update_order__when_data_is_valid__expect_to_update(self):
         user = self._create_user_and_login(self.VALID_USER_DATA)
@@ -191,6 +205,30 @@ class OrderViewSetTests(APITestCase):
 
             self.assertEqual(response_order_id, expected_order_id)
             self.assertEqual(response_order_date, expected_order_date)
+
+    def test_stats_orders__when_user_is_not_auth__should_raise(self):
+        # Act
+        response_price = self.client.get(
+            reverse("order-stats"),
+            data={
+                "date_start": "2023-02-01",
+                "date_end": "2023-06-01",
+                "metric": "price",
+            },
+        )
+
+        response_count = self.client.get(
+            reverse("order-stats"),
+            data={
+                "date_start": "2023-02-01",
+                "date_end": "2023-06-01",
+                "metric": "count",
+            },
+        )
+
+        # Assert
+        self.assertEqual(response_price.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response_count.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_stats_orders__when_user_is_admin__expect_all_orders(self):
         # Arrange
