@@ -3,7 +3,7 @@
         "model": "auth.user",
         "fields": {
             "password": "pbkdf2_sha256$390000$wM8FuDWCN29nkmmFkz9YVx$/rpwEhszqN7wMLgSog1HJhC4b2SsWvxtTWC/A/tE48Q=",
-            "last_login": "2022-11-23T10:28:40.929Z",
+            "last_login": "2022-12-19T21:14:52.730Z",
             "is_superuser": true,
             "username": "doncho",
             "first_name": "",
@@ -51,54 +51,14 @@
         }
     },
     {
-        "model": "sessions.session",
-        "pk": "ju9f6urhxe0yabikx2wpgewzetir1bcc",
-        "fields": {
-            "session_data": ".eJxVjDsOwjAQRO_iGln-rD9Q0nMGa-3d4ABypDipEHcnkVJAN5r3Zt4i4brUtHae00jiIjSI02-ZsTy57YQe2O6TLFNb5jHLXZEH7fI2Eb-uh_t3ULHXbR0ILEaKthgq2cGWBu8t2kzMNqIHQ84Yq0hpAwr8mcPAXLTTRQVg8fkCDm83-Q:1oxmzg:nS7ujgZ7SLDc5I5GMGdkTs6n6Vxo5ykH2ytqa2t8esE",
-            "expire_date": "2022-12-07T10:28:40.932Z"
-        }
-    },
-    {
-        "model": "sessions.session",
-        "pk": "v7f5nc2jjstfytl0v2uynhc0kyquw4im",
-        "fields": {
-            "session_data": ".eJxVjEEOwiAQRe_C2hCHlg64dN8zEIYZpGpoUtqV8e7apAvd_vfef6kQt7WErckSJlYXZXp1-h0ppofUnfA91tus01zXZSK9K_qgTY8zy_N6uH8HJbbyreEsnbPeGfbkiIkHMYYhE3sADxlzD9Z1HVpIgIwRexEYkEBsdmjU-wMBTTe5:1ownGy:Uiwg2vj89js6mebjvGFtISgeaTJ7-OoVGB0J83Fz6Xo",
-            "expire_date": "2022-12-04T16:34:24.366Z"
-        }
-    },
-    {
-        "model": "authtoken.token",
-        "pk": "0c972e2a58275d292cf492933d35251b51fe3184",
-        "fields": {
-            "user": ["dakata_gb70"],
-            "created": "2022-11-20T15:54:53.893Z"
-        }
-    },
-    {
-        "model": "authtoken.token",
-        "pk": "1a5b25c56ed99ccb05304ec6760b4fbe9ba1f120",
-        "fields": {
-            "user": ["YordanPetrov"],
-            "created": "2022-11-20T20:39:36.384Z"
-        }
-    },
-    {
-        "model": "authtoken.token",
-        "pk": "4f529405084e116d89947c3b1122800cc9e4fe45",
-        "fields": {
-            "user": ["doncho"],
-            "created": "2022-11-06T22:27:06.341Z"
-        }
-    },
-    {
         "model": "catalog.product",
         "pk": 1,
         "fields": {
             "title": "Mouse",
             "price": "11.00",
-            "stock": 59,
+            "stock": 55,
             "created_at": "2022-11-12T13:16:10.370Z",
-            "updated_at": "2022-11-29T14:03:18.224Z"
+            "updated_at": "2023-01-21T22:57:30.691Z"
         }
     },
     {
@@ -107,9 +67,9 @@
         "fields": {
             "title": "Keyboard",
             "price": "14.00",
-            "stock": 95,
+            "stock": 93,
             "created_at": "2022-11-12T13:16:24.877Z",
-            "updated_at": "2022-11-22T22:30:38.945Z"
+            "updated_at": "2022-12-19T21:22:17.402Z"
         }
     },
     {
@@ -195,9 +155,9 @@
         "fields": {
             "title": "SSD",
             "price": "500.00",
-            "stock": 99,
+            "stock": 98,
             "created_at": "2022-11-22T18:56:59.293Z",
-            "updated_at": "2022-11-22T22:24:15.277Z"
+            "updated_at": "2022-12-19T21:24:02.437Z"
         }
     },
     {
@@ -209,6 +169,30 @@
             "stock": 200,
             "created_at": "2022-11-23T21:57:05.319Z",
             "updated_at": "2022-11-23T21:59:13.569Z"
+        }
+    },
+    {
+        "model": "catalog.order",
+        "pk": 1,
+        "fields": {
+            "date": "2022-12-19",
+            "user": ["doncho"]
+        }
+    },
+    {
+        "model": "catalog.order",
+        "pk": 2,
+        "fields": {
+            "date": "2023-11-10",
+            "user": ["dakata_gb70"]
+        }
+    },
+    {
+        "model": "catalog.order",
+        "pk": 3,
+        "fields": {
+            "date": "2023-12-01",
+            "user": ["dakata_gb70"]
         }
     },
     {
@@ -345,6 +329,54 @@
         "fields": {
             "date": "2023-01-10",
             "user": ["dakata_gb70"]
+        }
+    },
+    {
+        "model": "catalog.order",
+        "pk": 21,
+        "fields": {
+            "date": "2023-06-01",
+            "user": ["dakata_gb70"]
+        }
+    },
+    {
+        "model": "catalog.orderproduct",
+        "pk": 3,
+        "fields": {
+            "order": 20,
+            "product": 1,
+            "quantity": 1,
+            "price": "11.00"
+        }
+    },
+    {
+        "model": "catalog.orderproduct",
+        "pk": 4,
+        "fields": {
+            "order": 4,
+            "product": 1,
+            "quantity": 2,
+            "price": "11.00"
+        }
+    },
+    {
+        "model": "catalog.orderproduct",
+        "pk": 5,
+        "fields": {
+            "order": 4,
+            "product": 2,
+            "quantity": 2,
+            "price": "11.00"
+        }
+    },
+    {
+        "model": "catalog.orderproduct",
+        "pk": 6,
+        "fields": {
+            "order": 5,
+            "product": 11,
+            "quantity": 1,
+            "price": "11.00"
         }
     },
     {
@@ -605,6 +637,68 @@
             "product": 1,
             "quantity": 1,
             "price": "11.00"
+        }
+    },
+    {
+        "model": "catalog.orderproduct",
+        "pk": 45,
+        "fields": {
+            "order": 20,
+            "product": 1,
+            "quantity": 1,
+            "price": "11.00"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 1,
+        "fields": {
+            "action_time": "2022-12-19T21:18:20.428Z",
+            "user": ["doncho"],
+            "content_type": ["catalog", "orderproduct"],
+            "object_id": "4",
+            "object_repr": "product: Mouse - quantity: 2 - total price: 22",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 2,
+        "fields": {
+            "action_time": "2022-12-19T21:22:17.403Z",
+            "user": ["doncho"],
+            "content_type": ["catalog", "orderproduct"],
+            "object_id": "5",
+            "object_repr": "product: Keyboard - quantity: 2 - total price: 22",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 3,
+        "fields": {
+            "action_time": "2022-12-19T21:24:02.438Z",
+            "user": ["doncho"],
+            "content_type": ["catalog", "orderproduct"],
+            "object_id": "6",
+            "object_repr": "product: SSD - quantity: 1 - total price: 11",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 4,
+        "fields": {
+            "action_time": "2022-12-19T21:33:35.810Z",
+            "user": ["doncho"],
+            "content_type": ["catalog", "order"],
+            "object_id": "1",
+            "object_repr": "id: 1 date: 2022-12-19 - user: doncho",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
         }
     }
 ]

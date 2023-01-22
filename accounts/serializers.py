@@ -12,13 +12,14 @@ class CreateUserSerializer(serializers.ModelSerializer):
         model = UserModel
         fields = ("id", UserModel.USERNAME_FIELD, "password", "email")
 
-    # Fix issue with password in plain text
+    # Create user
     def create(self, validate_data):
-        user = super().create(validate_data)
-
-        user.set_password(validate_data["password"])
+        user = UserModel.objects.create_user(
+            username=validate_data["username"],
+            password=validate_data["password"],
+            email=validate_data["email"],
+        )
         user.save()
-
         return user
 
     # Invoke password validators

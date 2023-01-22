@@ -12,8 +12,8 @@ DEBUG = os.getenv("DEBUG")
 APP_ENVIRONMENT = os.getenv("APP_ENVIRONMENT")
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-ALLOWED_HOSTS = [os.getenv("ALLOWED_HOSTS")]
-CORS_ALLOWED_ORIGINS = [os.getenv("CORS_ALLOWED_ORIGINS")]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS").split(",")
 
 DJANGO_APPS = (
     "django.contrib.admin",
@@ -54,6 +54,7 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
     ],
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
 }

@@ -27,7 +27,7 @@ class Product(models.Model):
 
 
 class Order(models.Model):
-    date = models.DateField(default=datetime.datetime.now().strftime("%Y-%m-%d"))
+    date = models.DateField(default=datetime.date.today)
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
 
     def __str__(self):
