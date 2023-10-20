@@ -6,4 +6,4 @@ class MainConfig(AppConfig):
     name = "catalog"
 
     def ready(self):
-        from . import signals
+        from . import signals  # noqa

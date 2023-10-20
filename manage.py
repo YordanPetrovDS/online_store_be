@@ -4,7 +4,12 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "online_store_api.settings")
+    settings = (
+        "online_store_api.test_settings"
+        if "test" in sys.argv
+        else "online_store_api.settings"
+    )
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings)
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

@@ -39,7 +39,7 @@ class OrderProductSerializer(serializers.ModelSerializer):
 
         try:
             quantity = int(validate_data["quantity"])
-        except Exception as e:
+        except Exception:
             raise serializers.ValidationError(
                 detail={"Error": "Please Enter Your Quantity"}
             )
@@ -60,7 +60,7 @@ class OrderProductSerializer(serializers.ModelSerializer):
 
         try:
             quantity = int(validate_data["quantity"])
-        except Exception as e:
+        except Exception:
             raise serializers.ValidationError(
                 detail={"Error": "Please Enter Your Quantity"}
             )

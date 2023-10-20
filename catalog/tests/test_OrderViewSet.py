@@ -35,7 +35,6 @@ class OrderViewSetTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_order__when_data_is_valid__expect_to_create(self):
-
         user = self._create_user_and_login(self.VALID_USER_DATA)
 
         sample_data = {
@@ -150,7 +149,6 @@ class OrderViewSetTests(APITestCase):
             self.assertEqual(response_order_user_id, expected_order_user_id)
 
     def test_get_orders__when_user_is_admin__expect_all_orders(self):
-
         user_1 = self._create_user_and_login(self.VALID_USER_DATA, True)
 
         user_2_data = {

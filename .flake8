@@ -1,0 +1,20 @@
+[flake8]
+ignore =
+    # To be PEP-8 compliant, Black splits lines before binary operators
+    W503,
+    # For the same reason, Black enforces whitespace around slice operators
+    E203,
+    # Do not enforce newlines before class docstrings
+    D203
+exclude =
+    .git
+    __pycache__,
+    logs,
+    tmp,
+    venv,
+    settings.py,
+    test_settings.py,
+    migrations,
+    .venv,
+
+max-line-length=120

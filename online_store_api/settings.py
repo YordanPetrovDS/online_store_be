@@ -1,19 +1,16 @@
-import os
 from pathlib import Path
 
-from dotenv import load_dotenv
+import dj_database_url
+from decouple import config
 
 from online_store_api.utils import is_production, is_test
 
-load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent.parent
-DEBUG = os.getenv("DEBUG")
-APP_ENVIRONMENT = os.getenv("APP_ENVIRONMENT")
-SECRET_KEY = os.getenv("SECRET_KEY")
-
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
-CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS").split(",")
+DEBUG = config("DEBUG", default=False, cast=bool)
+APP_ENVIRONMENT = config("APP_ENVIRONMENT", default="Development")
+SECRET_KEY = config("SECRET_KEY")
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", "localhost").split(",")
+CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS").split(",")
 
 DJANGO_APPS = (
     "django.contrib.admin",
@@ -79,16 +76,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "online_store_api.wsgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": os.getenv("DB_HOST"),
-        "PORT": os.getenv("DB_PORT"),
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-    }
-}
+
+DATABASES = {"default": dj_database_url.config(default=config("DATABASE_URL"))}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -113,7 +102,14 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
+LOCALE_PATHS = [
+    BASE_DIR / "locale/",
+]
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "static"
+STATICFILES_DIRS = [(BASE_DIR / "assets")]
+MEDIA_ROOT = BASE_DIR / "media/"
+MEDIA_URL = "/media/"
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

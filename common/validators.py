@@ -3,8 +3,7 @@ import datetime
 from rest_framework import serializers
 
 
-def validate_query_param(params: list, request, possible_choices: list = []):
-
+def validate_query_param(params: list, request, possible_choices: list = []) -> list:
     param_value_list = []
     for param in params:
         # Check if paramater exists
@@ -32,10 +31,13 @@ def validate_query_param(params: list, request, possible_choices: list = []):
 
         # Check if parameter value for metric is one of the possible choices
         if param == "metric" and param_value not in possible_choices:
+            error_message = (
+                f"Incorrect value for filter field '{param}', "
+                f"correct values are: {', '.join(possible_choices)}"
+            )
+
             raise serializers.ValidationError(
-                detail={
-                    "Error": f"Incorrect value for filter field '{param}', correct values are: {', '.join(possible_choices)}"
-                },
+                detail={"Error": error_message},
             )
 
     # Check if parameters are only three

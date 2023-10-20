@@ -1,7 +1,17 @@
 repos:
--   repo: https://github.com/psf/black
-    rev: 22.10.0
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
     hooks:
-    - id: black
-      language_version: python3.10.5
-      exclude: ^(additional_materials/)
+      - id: isort
+        args: ["--profile", "black", "--filter-files"]
+
+  - repo: https://github.com/psf/black
+    rev: 23.10.0
+    hooks:
+      - id: black
+        language_version: python3.11
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: 6.1.0
+    hooks:
+      - id: flake8
