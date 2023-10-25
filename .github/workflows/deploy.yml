@@ -12,4 +12,4 @@ jobs:
                   username: ${{ secrets.USERNAME }}
                   key: ${{ secrets.SSH_PRIV_KEY }}
                   port: ${{ secrets.PORT }}
-                  script: whoami
+                  script: whoam
