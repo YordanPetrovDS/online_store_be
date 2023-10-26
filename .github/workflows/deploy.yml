@@ -15,4 +15,4 @@ jobs:
                   username: ${{ secrets.USERNAME }}
                   key: ${{ secrets.SSH_PRIV_KEY }}
                   port: ${{ secrets.PORT }}
-                  script: /home/ec2-user/online_store_be/pull_restart.sh
+                  script: cd ~/online_store_be && bash pull_restart.sh
