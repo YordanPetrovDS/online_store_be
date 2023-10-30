@@ -119,3 +119,7 @@ if is_production():
     LOGGING_LEVEL = "INFO"
 elif is_test():
     LOGGING_LEVEL = "CRITICAL"
+
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default="http://localhost").split(
+    ","
+)
