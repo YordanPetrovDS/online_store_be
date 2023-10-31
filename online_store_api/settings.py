@@ -11,10 +11,7 @@ APP_ENVIRONMENT = config("APP_ENVIRONMENT", default="Development")
 SECRET_KEY = config("SECRET_KEY")
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", "localhost").split(",")
 CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS").split(",")
-CSRF_TRUSTED_ORIGINS = config(
-    "CSRF_TRUSTED_ORIGINS", default="https://localhost"
-).split(",")
-
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS").split(",")
 
 DJANGO_APPS = (
     "django.contrib.admin",
