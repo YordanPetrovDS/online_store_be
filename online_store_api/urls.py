@@ -22,6 +22,7 @@ urlpatterns = [
     path("api/auth/", include("accounts.urls")),
     path("api/", include("catalog.urls")),
     re_path("^api/", include("cms.urls", namespace="cms")),
+    re_path("^api/", include("blog.urls", namespace="blog")),
     re_path(
         r"^swagger/$",
         schema_view.with_ui("swagger", cache_timeout=0),

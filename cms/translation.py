@@ -13,6 +13,7 @@ class PageTranslationOptions(TranslationOptions):
         "meta_description",
         "meta_keywords",
         "meta_canonical",
+        "content",
     )
 
 

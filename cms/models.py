@@ -11,6 +11,7 @@ class Page(BaseModel):
     is_published = models.BooleanField(default=False)
     custom_javascript = models.TextField(blank=True)
     og_image = models.ImageField(blank=True, null=True, validators=[image_validator])
+    content = RichTextUploadingField(blank=True)
 
     # Meta fields for SEO
     meta_title = models.CharField(max_length=255)
@@ -51,3 +52,11 @@ class Paragraph(BaseModel):
 
     class Meta:
         ordering = ("sort_order",)
+
+
+class MainPage(Page):
+    pass
+
+
+class InfoPage(Page):
+    pass
