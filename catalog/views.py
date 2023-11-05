@@ -14,7 +14,7 @@ from catalog.serializers import (
     ProductSerializer,
 )
 from common.mixins import DefaultsMixin
-from common.validators import validate_query_param
+from utils.validators import validate_query_param
 
 
 class ProductViewSet(DefaultsMixin, viewsets.ModelViewSet):

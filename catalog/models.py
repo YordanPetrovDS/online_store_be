@@ -3,10 +3,12 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from common.models import BaseModel
+
 UserModel = get_user_model()
 
 
-class Product(models.Model):
+class Product(BaseModel):
     TITLE_MAX_LENGTH = 100
     PRICE_MAX_DIGITS = 10
     PRICE_DECIMALS_PLACES = 2
@@ -16,8 +18,6 @@ class Product(models.Model):
         max_digits=PRICE_MAX_DIGITS, decimal_places=PRICE_DECIMALS_PLACES
     )
     stock = models.IntegerField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.title}"
@@ -26,7 +26,7 @@ class Product(models.Model):
         ordering = ["id"]
 
 
-class Order(models.Model):
+class Order(BaseModel):
     date = models.DateField(default=datetime.date.today)
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
 
@@ -37,7 +37,7 @@ class Order(models.Model):
         ordering = ["id"]
 
 
-class OrderProduct(models.Model):
+class OrderProduct(BaseModel):
     PRICE_MAX_DIGITS = 10
     PRICE_DECIMALS_PLACES = 2
 
