@@ -27,10 +27,7 @@ class ListExcludeEmptyTitleModelMixin:
 
         # Filter by not-empty title in current language
         current_language = translation.get_language()
-        if (
-            current_language is not None
-            and current_language != settings.MODELTRANSLATION_DEFAULT_LANGUAGE
-        ):
+        if current_language is not None and current_language != settings.MODELTRANSLATION_DEFAULT_LANGUAGE:
             kwargs = {f"title_{translation.get_language()}__isnull": False}
             queryset = queryset.filter(**kwargs)
 
