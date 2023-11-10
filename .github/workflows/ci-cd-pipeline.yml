@@ -1,8 +1,6 @@
 name: CI/CD Workflow
 
-on:
-    push:
-        branches: ['**']
+on: [push]
 
 jobs:
     test-lint-format:
