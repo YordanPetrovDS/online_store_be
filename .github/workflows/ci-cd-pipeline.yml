@@ -27,11 +27,11 @@ jobs:
 
             - name: Set environment variables
               run: |
-                  echo "SECRET_KEY=${{ secrets.SECRET_KEY }}"
-                  echo "CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }}"
-                  echo "CSRF_TRUSTED_ORIGINS=${{ secrets.CSRF_TRUSTED_ORIGINS }}"
-                  echo "DATABASE_URL=${{ secrets.DATABASE_URL }}"
-                  echo "TEST_DATABASE_URL=${{ secrets.TEST_DATABASE_URL }}"
+                  echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+                  echo "CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }}" >> $GITHUB_ENV
+                  echo "CSRF_TRUSTED_ORIGINS=${{ secrets.CSRF_TRUSTED_ORIGINS }}" >> $GITHUB_ENV
+                  echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+                  echo "TEST_DATABASE_URL=${{ secrets.TEST_DATABASE_URL }}" >> $GITHUB_ENV
 
             - name: Run linting
               run: flake8
