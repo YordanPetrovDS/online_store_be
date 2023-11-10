@@ -29,6 +29,8 @@ jobs:
               run: |
                   echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
                   echo "CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }}" >> $GITHUB_ENV
+                  echo "CSRF_TRUSTED_ORIGINS=${{ secrets.CSRF_TRUSTED_ORIGINS }}" >> $GITHUB_ENV
+
 
             - name: Run linting
               run: flake8
