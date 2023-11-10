@@ -39,9 +39,7 @@ class Banner(BaseModel):
 
 
 class Paragraph(BaseModel):
-    page = models.ForeignKey(
-        to=Page, on_delete=models.CASCADE, related_name="paragraphs"
-    )
+    page = models.ForeignKey(to=Page, on_delete=models.CASCADE, related_name="paragraphs")
     title = models.CharField(max_length=256)
     image = models.ImageField(blank=True, null=True, validators=[image_validator])
     content = RichTextUploadingField(blank=True, config_name="small")

@@ -187,12 +187,8 @@ ckeditor__external_plugin_resources = [
         "plugin.js",
     )
 ]
-CKEDITOR_CONFIGS[CKEDITOR_CONFIG_DEFAULT][
-    "external_plugin_resources"
-] = ckeditor__external_plugin_resources
-CKEDITOR_CONFIGS[CKEDITOR_CONFIG_SMALL][
-    "external_plugin_resources"
-] = ckeditor__external_plugin_resources
+CKEDITOR_CONFIGS[CKEDITOR_CONFIG_DEFAULT]["external_plugin_resources"] = ckeditor__external_plugin_resources
+CKEDITOR_CONFIGS[CKEDITOR_CONFIG_SMALL]["external_plugin_resources"] = ckeditor__external_plugin_resources
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -207,9 +203,7 @@ elif is_test():
 IMAGE_MAX_WIDTH = config("IMAGE_MAX_WIDTH", 800, cast=int)
 IMAGE_MAX_HEIGHT = config("IMAGE_MAX_HEIGHT", 600, cast=int)
 IMAGE_MAX_MB = config("IMAGE_MAX_MB", 3, cast=int)
-IMAGE_VALID_EXTENSIONS = (
-    config("IMAGE_VALID_EXTENSIONS", "png,jpeg,jpg").lower().split(",")
-)
+IMAGE_VALID_EXTENSIONS = config("IMAGE_VALID_EXTENSIONS", "png,jpeg,jpg").lower().split(",")
 
 # Video limits
 VIDEO_MAX_MB = config("VIDEO_MAX_MB", 50, cast=int)

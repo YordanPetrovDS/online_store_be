@@ -25,9 +25,7 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(OrderProduct)
 class OrderProductAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in OrderProduct._meta.get_fields()] + [
-        "total_price"
-    ]
+    list_display = [field.name for field in OrderProduct._meta.get_fields()] + ["total_price"]
 
     list_filter = (
         ("quantity", NumericRangeFilter),

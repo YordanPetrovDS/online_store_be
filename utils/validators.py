@@ -15,9 +15,7 @@ def image_validator(image):
 
     # Check image file size
     if image.size > max_size_bytes:
-        raise ValidationError(
-            message=f"Maximum allowed file size is {settings.IMAGE_MAX_MB}MB."
-        )
+        raise ValidationError(message=f"Maximum allowed file size is {settings.IMAGE_MAX_MB}MB.")
 
     # Check image dimensions
     img = Image.open(image)
@@ -36,9 +34,7 @@ def video_validator(video):
 
     # Check video file size
     if video.size > max_size_bytes:
-        raise ValidationError(
-            message=f"Maximum allowed file size is {settings.VIDEO_MAX_MB}MB."
-        )
+        raise ValidationError(message=f"Maximum allowed file size is {settings.VIDEO_MAX_MB}MB.")
 
 
 def validate_no_spaces(value):
@@ -54,9 +50,7 @@ def validate_query_param(params: list, request, possible_choices: list = []) -> 
             param_value = request.query_params[param]
             param_value_list.append(param_value)
         except Exception:
-            raise serializers.ValidationError(
-                detail={"Error": f"There is missing filter field '{param}'"}
-            )
+            raise serializers.ValidationError(detail={"Error": f"There is missing filter field '{param}'"})
         # Check if parameter values is empty
         if not param_value:
             raise serializers.ValidationError(detail={"Error": f"{param} is empty"})
@@ -67,16 +61,13 @@ def validate_query_param(params: list, request, possible_choices: list = []) -> 
                 datetime.datetime.strptime(param_value, "%Y-%m-%d")
             except Exception:
                 raise serializers.ValidationError(
-                    detail={
-                        "Error": f"Incorrect data format for param '{param}', should be YYYY-MM-DD"
-                    }
+                    detail={"Error": f"Incorrect data format for param '{param}', should be YYYY-MM-DD"}
                 )
 
         # Check if parameter value for metric is one of the possible choices
         if param == "metric" and param_value not in possible_choices:
             error_message = (
-                f"Incorrect value for filter field '{param}', "
-                f"correct values are: {', '.join(possible_choices)}"
+                f"Incorrect value for filter field '{param}', " f"correct values are: {', '.join(possible_choices)}"
             )
 
             raise serializers.ValidationError(
@@ -88,9 +79,7 @@ def validate_query_param(params: list, request, possible_choices: list = []) -> 
         len(request.query_params) > 4 and "page" in request.query_params
     ):
         raise serializers.ValidationError(
-            detail={
-                "Error": f"The query params should be only the following ones - {','.join(params)}"
-            }
+            detail={"Error": f"The query params should be only the following ones - {','.join(params)}"}
         )
 
     return param_value_list

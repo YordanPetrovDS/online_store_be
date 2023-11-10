@@ -137,9 +137,7 @@ class OrderViewSetTests(APITestCase):
         for idx in range(len(orders)):
             response_order_id = response.data["results"][idx]["id"]
             response_order_date = response.data["results"][idx]["date"]
-            response_order_user_id = (
-                response.data["results"].serializer.context["request"].user.id
-            )
+            response_order_user_id = response.data["results"].serializer.context["request"].user.id
             expected_order_id = orders[idx].id
             expected_order_date = orders[idx].date.strftime("%Y-%m-%d")
             expected_order_user_id = orders[idx].user.id

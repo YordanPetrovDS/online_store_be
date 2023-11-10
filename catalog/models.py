@@ -14,9 +14,7 @@ class Product(BaseModel):
     PRICE_DECIMALS_PLACES = 2
 
     title = models.CharField(max_length=TITLE_MAX_LENGTH)
-    price = models.DecimalField(
-        max_digits=PRICE_MAX_DIGITS, decimal_places=PRICE_DECIMALS_PLACES
-    )
+    price = models.DecimalField(max_digits=PRICE_MAX_DIGITS, decimal_places=PRICE_DECIMALS_PLACES)
     stock = models.IntegerField()
 
     def __str__(self):
