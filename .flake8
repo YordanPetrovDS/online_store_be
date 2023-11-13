@@ -6,8 +6,8 @@ ignore =
     E203,
     # Do not enforce newlines before class docstrings
     D203
-
 exclude =
+    migrations,
     .git,
     __pycache__,
     logs,
@@ -15,7 +15,5 @@ exclude =
     venv,
     settings.py,
     test_settings.py,
-    migrations,
     .venv
-
 max-line-length=120
