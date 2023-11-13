@@ -33,21 +33,15 @@ class OrderProductSerializer(serializers.ModelSerializer):
         order = get_object_or_404(Order, pk=validate_data["order"].id)
 
         if self.context["request"].user.id != order.user.id:
-            raise serializers.ValidationError(
-                detail={"Error": "This order is not yours. Please enter your order id."}
-            )
+            raise serializers.ValidationError(detail={"Error": "This order is not yours. Please enter your order id."})
 
         try:
             quantity = int(validate_data["quantity"])
         except Exception:
-            raise serializers.ValidationError(
-                detail={"Error": "Please Enter Your Quantity"}
-            )
+            raise serializers.ValidationError(detail={"Error": "Please Enter Your Quantity"})
 
         if quantity > product.stock:
-            raise NotAcceptable(
-                detail={"Error": "You order quantity more than the seller have"}
-            )
+            raise NotAcceptable(detail={"Error": "You order quantity more than the seller have"})
 
         validate_data["price"] = product.price
 
@@ -61,9 +55,7 @@ class OrderProductSerializer(serializers.ModelSerializer):
         try:
             quantity = int(validate_data["quantity"])
         except Exception:
-            raise serializers.ValidationError(
-                detail={"Error": "Please Enter Your Quantity"}
-            )
+            raise serializers.ValidationError(detail={"Error": "Please Enter Your Quantity"})
 
         if validate_data["product"] != instance.product:
             product_old: Product = instance.product
@@ -76,9 +68,7 @@ class OrderProductSerializer(serializers.ModelSerializer):
             product.save()
 
         if quantity > product.stock:
-            raise NotAcceptable(
-                detail={"Error": "You order quantity more than the seller have"}
-            )
+            raise NotAcceptable(detail={"Error": "You order quantity more than the seller have"})
 
         instance.quantity = quantity
         instance.order = order

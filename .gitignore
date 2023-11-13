@@ -164,6 +164,3 @@ Dockerfile
 #deploy
 pull_restart.sh
 /venv/
-
-#formatting
-pyproject.toml
