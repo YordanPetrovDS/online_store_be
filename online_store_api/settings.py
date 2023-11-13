@@ -34,6 +34,7 @@ THIRD_PARTY_APPS = (
     "ckeditor",
     "ckeditor_uploader",
     "adminsortable2",
+    "mptt",
 )
 
 PROJECT_APPS = (

@@ -1,7 +1,8 @@
 from django.contrib import admin
+from mptt.admin import MPTTModelAdmin
 from rangefilter.filters import DateRangeFilter, NumericRangeFilter
 
-from .models import Order, OrderProduct, Product
+from .models import Order, OrderProduct, Product, ProductCategory
 
 
 @admin.register(Product)
@@ -34,3 +35,11 @@ class OrderProductAdmin(admin.ModelAdmin):
     )
     search_fields = ("product__title",)
     # exclude = ("price",)
+
+
+@admin.register(ProductCategory)
+class ProductCategoryAdmin(MPTTModelAdmin):
+    list_display = ("title", "parent")
+    search_fields = ("title",)
+    mptt_level_indent = 20
+    list_filter = ("parent",)
