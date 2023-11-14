@@ -7,10 +7,11 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from catalog.filters import OrderFilter, OrderProductFilter, ProductFilter
-from catalog.models import Order, OrderProduct, Product
+from catalog.models import Order, OrderProduct, Product, ProductCategory
 from catalog.serializers import (
     OrderProductSerializer,
     OrderSerializer,
+    ProductCategorySerializer,
     ProductSerializer,
 )
 from common.mixins import DefaultsMixin
@@ -101,3 +102,11 @@ class OrderProductViewSet(DefaultsMixin, viewsets.ModelViewSet):
         if self.action == "list" and not self.request.user.is_staff:
             queryset = queryset.filter(order__user=self.request.user)
         return queryset
+
+
+class ProductCategoryViewSet(viewsets.ModelViewSet):
+    queryset = ProductCategory.objects.all()
+    serializer_class = ProductCategorySerializer
+    filter_backends = [filters.DjangoFilterBackend, drf_filters.SearchFilter]
+    filterset_fields = ["parent"]
+    search_fields = ["title"]

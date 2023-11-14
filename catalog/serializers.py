@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import NotAcceptable
 
-from .models import Order, OrderProduct, Product
+from catalog.models import Order, OrderProduct, Product, ProductCategory
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -82,3 +82,16 @@ class OrderProductSerializer(serializers.ModelSerializer):
         result["order_date"] = instance.order.date
         result["product_name"] = instance.product.title
         return result
+
+
+class ProductCategorySerializer(serializers.ModelSerializer):
+    children = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductCategory
+        fields = ["id", "title", "parent", "children"]
+
+    def get_children(self, obj):
+        if obj.children.exists():
+            return ProductCategorySerializer(obj.children.all(), many=True).data
+        return []

@@ -2,6 +2,7 @@ import datetime
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from mptt.models import MPTTModel, TreeForeignKey
 
 from common.models import BaseModel
 
@@ -55,3 +56,17 @@ class OrderProduct(BaseModel):
 
     class Meta:
         ordering = ["id"]
+
+
+class ProductCategory(BaseModel, MPTTModel):
+    title = models.CharField(max_length=100, unique=True)
+    parent = TreeForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="children")
+
+    class MPTTMeta:
+        order_insertion_by = ["title"]
+
+    class Meta:
+        verbose_name_plural = "Product Categories"
+
+    def __str__(self):
+        return self.title
