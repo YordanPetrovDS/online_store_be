@@ -7,7 +7,7 @@ ignore =
     # Do not enforce newlines before class docstrings
     D203
 exclude =
-    migrations,
+    */migrations/*,
     .git,
     __pycache__,
     logs,

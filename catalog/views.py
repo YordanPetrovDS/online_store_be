@@ -7,15 +7,40 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from catalog.filters import OrderFilter, OrderProductFilter, ProductFilter
-from catalog.models import Order, OrderProduct, Product, ProductCategory
+from catalog.models import (
+    Attribute,
+    AttributeOption,
+    Brand,
+    Order,
+    OrderProduct,
+    Product,
+    ProductAttribute,
+    ProductAttributeOption,
+    ProductCategory,
+)
 from catalog.serializers import (
+    AttributeOptionSerializer,
+    AttributeSerializer,
+    BrandSerializer,
     OrderProductSerializer,
     OrderSerializer,
+    ProductAttributeOptionSerializer,
+    ProductAttributeSerializer,
     ProductCategorySerializer,
     ProductSerializer,
 )
 from common.mixins import DefaultsMixin
 from utils.validators import validate_query_param
+
+
+class AttributeViewSet(viewsets.ModelViewSet):
+    queryset = Attribute.objects.all()
+    serializer_class = AttributeSerializer
+
+
+class AttributeOptionViewSet(viewsets.ModelViewSet):
+    queryset = AttributeOption.objects.all()
+    serializer_class = AttributeOptionSerializer
 
 
 class ProductViewSet(DefaultsMixin, viewsets.ModelViewSet):
@@ -25,6 +50,11 @@ class ProductViewSet(DefaultsMixin, viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
     filterset_class = ProductFilter
     search_fields = ("title",)
+
+
+class ProductAttributeViewSet(viewsets.ModelViewSet):
+    queryset = ProductAttribute.objects.all()
+    serializer_class = ProductAttributeSerializer
 
 
 class OrderViewSet(DefaultsMixin, viewsets.ModelViewSet):
@@ -110,3 +140,13 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.DjangoFilterBackend, drf_filters.SearchFilter]
     filterset_fields = ["parent"]
     search_fields = ["title"]
+
+
+class ProductAttributeOptionViewSet(viewsets.ModelViewSet):
+    queryset = ProductAttributeOption.objects.all()
+    serializer_class = ProductAttributeOptionSerializer
+
+
+class BrandViewSet(viewsets.ModelViewSet):
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
