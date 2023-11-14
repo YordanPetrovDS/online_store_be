@@ -19,12 +19,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('title', models.CharField(max_length=100)),
-                ('type',
-                    models.CharField(choices=[('options', 'Options'),
-                                              ('number', 'Number'),
-                                              ('text', 'Text')],
-                                     default='text',
-                                     max_length=10))
+                ('type',models.CharField(choices=[('options', 'Options'),('number', 'Number'),('text', 'Text')],default='text',max_length=10))
             ],
             options={
                 'abstract': False,
