@@ -1,11 +1,13 @@
 import datetime
 
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 
+from cms.models import Page
 from common.models import BaseModel
 
 UserModel = get_user_model()
@@ -43,25 +45,47 @@ class AttributeOption(BaseModel):
         ordering = ["sort_order"]
 
 
-class Product(BaseModel):
-    TITLE_MAX_LENGTH = 100
+class Brand(BaseModel):
+    title = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.title
+
+
+class ProductCategory(BaseModel, MPTTModel):
+    title = models.CharField(max_length=100, unique=True)
+    parent = TreeForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="children")
+    attributes = models.ManyToManyField(Attribute, related_name="categories", blank=True)
+
+    class MPTTMeta:
+        order_insertion_by = ["title"]
+
+    class Meta:
+        verbose_name_plural = "Product Categories"
+
+    def __str__(self):
+        return self.title
+
+
+class Product(Page):
     PRICE_MAX_DIGITS = 10
     PRICE_DECIMALS_PLACES = 2
 
-    title = models.CharField(max_length=TITLE_MAX_LENGTH)
+    base_price = models.DecimalField(max_digits=PRICE_MAX_DIGITS, decimal_places=PRICE_DECIMALS_PLACES)
     price = models.DecimalField(max_digits=PRICE_MAX_DIGITS, decimal_places=PRICE_DECIMALS_PLACES)
-    stock = models.IntegerField()
-
-    def __str__(self):
-        return f"{self.title}"
+    stock = models.IntegerField(default=0)
+    description = RichTextUploadingField(blank=True)
+    sku = models.CharField(max_length=128, unique=True, blank=True, null=True)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="products", blank=True, null=True)
+    categories = models.ManyToManyField(ProductCategory, related_name="products", blank=True)
 
     class Meta:
         ordering = ["id"]
 
 
 class ProductAttribute(BaseModel):
-    product = models.ForeignKey("Product", on_delete=models.CASCADE)
-    attribute = models.ForeignKey("Attribute", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE)
     is_required = models.BooleanField(default=False)
     value_number = models.FloatField(null=True, blank=True)
     value_text = models.CharField(max_length=255, blank=True, null=True)
@@ -106,21 +130,6 @@ class OrderProduct(BaseModel):
         ordering = ["id"]
 
 
-class ProductCategory(BaseModel, MPTTModel):
-    title = models.CharField(max_length=100, unique=True)
-    parent = TreeForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="children")
-    attributes = models.ManyToManyField(Attribute, related_name="categories", blank=True)
-
-    class MPTTMeta:
-        order_insertion_by = ["title"]
-
-    class Meta:
-        verbose_name_plural = "Product Categories"
-
-    def __str__(self):
-        return self.title
-
-
 class ProductAttributeOption(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     option = models.ForeignKey(AttributeOption, on_delete=models.CASCADE)
@@ -158,10 +167,3 @@ class ProductAttributeOption(BaseModel):
 
     def __str__(self):
         return f"{self.product.name} - {self.option.title}"
-
-
-class Brand(BaseModel):
-    title = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.title
