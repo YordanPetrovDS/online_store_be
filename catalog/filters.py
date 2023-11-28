@@ -1,4 +1,6 @@
-from django.db.models import OuterRef, Subquery
+from typing import List
+
+from django.db.models import OuterRef, QuerySet, Subquery
 from django_filters import rest_framework as filters
 
 from catalog.models import Order, OrderProduct, Product, ProductAttributeOption
@@ -16,17 +18,17 @@ class ProductFilter(filters.FilterSet):
         model = Product
         fields = ["title"]
 
-    def filter_in_stock(self, queryset, name, value):
+    def filter_in_stock(self, queryset: QuerySet, name, value) -> QuerySet:
         if value:
             return queryset.filter(stock__gt=0)
         return queryset.filter(stock=0)
 
-    def filter_attribute_options(self, queryset, name, value):
+    def filter_attribute_options(self, queryset: QuerySet, name: str, value: str) -> QuerySet:
         if not value:
             return queryset
 
         attribute_filters = value.split("|")
-        subqueries = []
+        subqueries: List[Subquery] = []
 
         for attr_filter in attribute_filters:
             attr_id, option_ids = attr_filter.split(":")
