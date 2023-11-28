@@ -39,8 +39,8 @@ THIRD_PARTY_APPS = (
 
 PROJECT_APPS = (
     "accounts",
-    "catalog",
     "cms",
+    "catalog",
     "utils",
     "blog",
 )

@@ -2,13 +2,41 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import NotAcceptable
 
-from catalog.models import Order, OrderProduct, Product, ProductCategory
+from catalog.models import (
+    Attribute,
+    AttributeOption,
+    Brand,
+    Order,
+    OrderProduct,
+    Product,
+    ProductAttribute,
+    ProductAttributeOption,
+    ProductCategory,
+)
+
+
+class AttributeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attribute
+        fields = ["id", "title", "type"]
+
+
+class AttributeOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AttributeOption
+        fields = ["id", "attribute", "title", "sort_order"]
 
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ["id", "title", "price", "stock"]
+
+
+class ProductAttributeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductAttribute
+        fields = "__all__"
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -86,12 +114,25 @@ class OrderProductSerializer(serializers.ModelSerializer):
 
 class ProductCategorySerializer(serializers.ModelSerializer):
     children = serializers.SerializerMethodField()
+    attributes = AttributeSerializer(many=True, read_only=True)
 
     class Meta:
         model = ProductCategory
-        fields = ["id", "title", "parent", "children"]
+        fields = ["id", "title", "parent", "children", "attributes"]
 
     def get_children(self, obj):
         if obj.children.exists():
             return ProductCategorySerializer(obj.children.all(), many=True).data
         return []
+
+
+class ProductAttributeOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductAttributeOption
+        fields = "__all__"
+
+
+class BrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Brand
+        fields = "__all__"
