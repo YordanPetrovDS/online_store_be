@@ -14,8 +14,8 @@ from catalog.views import (
 )
 
 router = routers.DefaultRouter()
-router.register(r"product", ProductViewSet, basename="product")
-router.register(r"order", OrderViewSet, basename="order")
+router.register(r"products", ProductViewSet, basename="products")
+router.register(r"orders", OrderViewSet, basename="orders")
 router.register(r"order-product", OrderProductViewSet, basename="order-product")
 router.register(r"product-categories", ProductCategoryViewSet, basename="product-categories")
 router.register(r"attributes", AttributeViewSet, basename="attributes")

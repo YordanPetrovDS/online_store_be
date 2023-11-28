@@ -31,7 +31,7 @@ class OrderViewSetTests(APITestCase):
         sample_data = {
             "date": "2022-11-01",
         }
-        response = self.client.post(reverse("order-list"), sample_data)
+        response = self.client.post(reverse("orders-list"), sample_data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_order__when_data_is_valid__expect_to_create(self):
@@ -42,7 +42,7 @@ class OrderViewSetTests(APITestCase):
         }
 
         response = self.client.post(
-            reverse("order-list"),
+            reverse("orders-list"),
             sample_data,
             HTTP_AUTHORIZATION=f"token {user.auth_token.key}",
         )
@@ -53,7 +53,7 @@ class OrderViewSetTests(APITestCase):
         sample_data = {
             "date": "2022-11-01",
         }
-        response = self.client.put(reverse("order-list"), sample_data)
+        response = self.client.put(reverse("orders-list"), sample_data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_update_order__when_data_is_valid__expect_to_update(self):
@@ -63,7 +63,7 @@ class OrderViewSetTests(APITestCase):
             "date": "2022-11-01",
         }
         response = self.client.post(
-            reverse("order-list"),
+            reverse("orders-list"),
             sample_data,
             HTTP_AUTHORIZATION=f"token {user.auth_token.key}",
         )
@@ -74,7 +74,7 @@ class OrderViewSetTests(APITestCase):
             "date": "2023-02-01",
         }
         response = self.client.put(
-            reverse("order-detail", kwargs={"pk": order.id}),
+            reverse("orders-detail", kwargs={"pk": order.id}),
             new_data,
             HTTP_AUTHORIZATION=f"token {user.auth_token.key}",
         )
@@ -88,7 +88,7 @@ class OrderViewSetTests(APITestCase):
             "date": "2022-11-01",
         }
         response = self.client.post(
-            reverse("order-list"),
+            reverse("orders-list"),
             sample_data,
             HTTP_AUTHORIZATION=f"token {user.auth_token.key}",
         )
@@ -96,7 +96,7 @@ class OrderViewSetTests(APITestCase):
         order = Order.objects.first()
 
         response = self.client.delete(
-            reverse("order-detail", kwargs={"pk": order.id}),
+            reverse("orders-detail", kwargs={"pk": order.id}),
             HTTP_AUTHORIZATION=f"token {user.auth_token.key}",
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -128,7 +128,7 @@ class OrderViewSetTests(APITestCase):
         orders = Order.objects.filter(user_id=user_1.id)
 
         response = self.client.get(
-            reverse("order-list"),
+            reverse("orders-list"),
             HTTP_AUTHORIZATION=f"token {user_1.auth_token.key}",
         )
 
@@ -171,13 +171,13 @@ class OrderViewSetTests(APITestCase):
         orders = Order.objects.all()
 
         response_1 = self.client.get(
-            reverse("order-list"),
+            reverse("orders-list"),
             data={"page": 1},
             HTTP_AUTHORIZATION=f"token {user_1.auth_token.key}",
         )
 
         response_2 = self.client.get(
-            reverse("order-list"),
+            reverse("orders-list"),
             data={"page": 2},
             HTTP_AUTHORIZATION=f"token {user_1.auth_token.key}",
         )
@@ -205,7 +205,7 @@ class OrderViewSetTests(APITestCase):
     def test_stats_orders__when_user_is_not_auth__should_raise(self):
         # Act
         response_price = self.client.get(
-            reverse("order-stats"),
+            reverse("orders-stats"),
             data={
                 "date_start": "2023-02-01",
                 "date_end": "2023-06-01",
@@ -214,7 +214,7 @@ class OrderViewSetTests(APITestCase):
         )
 
         response_count = self.client.get(
-            reverse("order-stats"),
+            reverse("orders-stats"),
             data={
                 "date_start": "2023-02-01",
                 "date_end": "2023-06-01",
@@ -396,7 +396,7 @@ class OrderViewSetTests(APITestCase):
 
         # Act
         response = self.client.get(
-            reverse("order-stats"),
+            reverse("orders-stats"),
             data={
                 "date_end": "2023-07-01",
                 "metric": "count",
@@ -414,7 +414,7 @@ class OrderViewSetTests(APITestCase):
 
         # Act
         response = self.client.get(
-            reverse("order-stats"),
+            reverse("orders-stats"),
             data={
                 "date_start": "2023-02-01",
                 "metric": "count",
@@ -432,7 +432,7 @@ class OrderViewSetTests(APITestCase):
 
         # Act
         response = self.client.get(
-            reverse("order-stats"),
+            reverse("orders-stats"),
             data={
                 "date_start": "2023-02-01",
                 "date_end": "2023-07-01",
@@ -450,7 +450,7 @@ class OrderViewSetTests(APITestCase):
 
         # Act
         response = self.client.get(
-            reverse("order-stats"),
+            reverse("orders-stats"),
             HTTP_AUTHORIZATION=f"token {user.auth_token.key}",
         )
 
@@ -468,7 +468,7 @@ class OrderViewSetTests(APITestCase):
 
         # Act
         response = self.client.get(
-            reverse("order-stats"),
+            reverse("orders-stats"),
             data={
                 "date_start": 234,
                 "date_end": "2023-07-01",
@@ -487,7 +487,7 @@ class OrderViewSetTests(APITestCase):
 
         # Act
         response = self.client.get(
-            reverse("order-stats"),
+            reverse("orders-stats"),
             data={
                 "date_start": "2023-02-01",
                 "date_end": 234,
@@ -506,7 +506,7 @@ class OrderViewSetTests(APITestCase):
 
         # Act
         response = self.client.get(
-            reverse("order-stats"),
+            reverse("orders-stats"),
             data={
                 "date_start": "2023-02-01",
                 "date_end": "2023-07-01",
@@ -533,7 +533,7 @@ class OrderViewSetTests(APITestCase):
 
         # Act
         response = self.client.get(
-            reverse("order-stats"),
+            reverse("orders-stats"),
             data={
                 "date_start": "",
                 "date_end": "2023-07-01",
@@ -549,7 +549,7 @@ class OrderViewSetTests(APITestCase):
 
         # Act
         response = self.client.get(
-            reverse("order-stats"),
+            reverse("orders-stats"),
             data={
                 "date_start": "2023-02-01",
                 "date_end": "",
@@ -565,7 +565,7 @@ class OrderViewSetTests(APITestCase):
 
         # Act
         response = self.client.get(
-            reverse("order-stats"),
+            reverse("orders-stats"),
             data={
                 "date_start": "2023-02-01",
                 "date_end": "2023-07-01",
@@ -591,7 +591,7 @@ class OrderViewSetTests(APITestCase):
 
         # Act
         response = self.client.get(
-            reverse("order-stats"),
+            reverse("orders-stats"),
             data={
                 "date_start": "2023-02-01",
                 "date_end": "2023-07-01",
