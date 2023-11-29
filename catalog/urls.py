@@ -17,8 +17,6 @@ from catalog.views import (
     PromotionViewSet,
 )
 
-app_name = "catalog"
-
 router = routers.DefaultRouter()
 router.register(r"products", ProductViewSet, basename="products")
 router.register(r"orders", OrderViewSet, basename="orders")

@@ -226,165 +226,165 @@ class OrderViewSetTests(APITestCase):
         self.assertEqual(response_price.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response_count.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    # def test_stats_orders__when_user_is_admin__expect_all_orders(self):
-    #     # Arrange
-    #     user_1_data = {
-    #         "username": "Petko",
-    #         "email": "doncho@abv.bg",
-    #         "password": "Newlife7",
-    #     }
-    #     admin = self._create_user_and_login(self.VALID_USER_DATA, True)
-    #     user_1 = self._create_user_and_login(user_1_data)
+    def test_stats_orders__when_user_is_admin__expect_all_orders(self):
+        # Arrange
+        user_1_data = {
+            "username": "Petko",
+            "email": "doncho@abv.bg",
+            "password": "Newlife7",
+        }
+        admin = self._create_user_and_login(self.VALID_USER_DATA, True)
+        user_1 = self._create_user_and_login(user_1_data)
 
-    #     p1 = Product(title="Mouse", price=10.00, stock=10)
-    #     p2 = Product(title="Keyboard", price=50.00, stock=10)
-    #     p1.save()
-    #     p2.save()
+        p1 = Product(title="Mouse", price=10.00, stock=10, base_price=10.00, slug="mouse")
+        p2 = Product(title="Keyboard", price=50.00, stock=10, base_price=10.00, slug="keyboard")
+        p1.save()
+        p2.save()
 
-    #     ord_1 = Order(date="2023-02-01", user=admin)
-    #     ord_2 = Order(date="2023-03-01", user=admin)
-    #     ord_3 = Order(date="2023-04-01", user=admin)
-    #     ord_4 = Order(date="2023-05-01", user=admin)
-    #     ord_5 = Order(date="2023-06-01", user=user_1)
-    #     ord_1.save()
-    #     ord_2.save()
-    #     ord_3.save()
-    #     ord_4.save()
-    #     ord_5.save()
+        ord_1 = Order(date="2023-02-01", user=admin)
+        ord_2 = Order(date="2023-03-01", user=admin)
+        ord_3 = Order(date="2023-04-01", user=admin)
+        ord_4 = Order(date="2023-05-01", user=admin)
+        ord_5 = Order(date="2023-06-01", user=user_1)
+        ord_1.save()
+        ord_2.save()
+        ord_3.save()
+        ord_4.save()
+        ord_5.save()
 
-    #     op1 = OrderProduct(order=ord_1, product=p1, quantity=1, price=p1.price)
-    #     op2 = OrderProduct(order=ord_2, product=p1, quantity=1, price=p1.price)
-    #     op3 = OrderProduct(order=ord_3, product=p1, quantity=1, price=p1.price)
-    #     op4 = OrderProduct(order=ord_4, product=p1, quantity=1, price=p1.price)
-    #     op5 = OrderProduct(order=ord_5, product=p2, quantity=2, price=p2.price)
-    #     op1.save()
-    #     op2.save()
-    #     op3.save()
-    #     op4.save()
-    #     op5.save()
+        op1 = OrderProduct(order=ord_1, product=p1, quantity=1, price=p1.price)
+        op2 = OrderProduct(order=ord_2, product=p1, quantity=1, price=p1.price)
+        op3 = OrderProduct(order=ord_3, product=p1, quantity=1, price=p1.price)
+        op4 = OrderProduct(order=ord_4, product=p1, quantity=1, price=p1.price)
+        op5 = OrderProduct(order=ord_5, product=p2, quantity=2, price=p2.price)
+        op1.save()
+        op2.save()
+        op3.save()
+        op4.save()
+        op5.save()
 
-    #     expected_result_price = [
-    #         {"month": "2023 February", "value": 10},
-    #         {"month": "2023 March", "value": 10},
-    #         {"month": "2023 April", "value": 10},
-    #         {"month": "2023 May", "value": 10},
-    #         {"month": "2023 June", "value": 100},
-    #     ]
+        expected_result_price = [
+            {"month": "2023 February", "value": 10},
+            {"month": "2023 March", "value": 10},
+            {"month": "2023 April", "value": 10},
+            {"month": "2023 May", "value": 10},
+            {"month": "2023 June", "value": 100},
+        ]
 
-    #     expected_result_count = [
-    #         {"month": "2023 February", "value": 1},
-    #         {"month": "2023 March", "value": 1},
-    #         {"month": "2023 April", "value": 1},
-    #         {"month": "2023 May", "value": 1},
-    #         {"month": "2023 June", "value": 2},
-    #     ]
+        expected_result_count = [
+            {"month": "2023 February", "value": 1},
+            {"month": "2023 March", "value": 1},
+            {"month": "2023 April", "value": 1},
+            {"month": "2023 May", "value": 1},
+            {"month": "2023 June", "value": 2},
+        ]
 
-    #     # Act
-    #     response_price = self.client.get(
-    #         reverse("order-stats"),
-    #         data={
-    #             "date_start": "2023-02-01",
-    #             "date_end": "2023-06-01",
-    #             "metric": "price",
-    #         },
-    #         HTTP_AUTHORIZATION=f"token {admin.auth_token.key}",
-    #     )
+        # Act
+        response_price = self.client.get(
+            reverse("orders-stats"),
+            data={
+                "date_start": "2023-02-01",
+                "date_end": "2023-06-01",
+                "metric": "price",
+            },
+            HTTP_AUTHORIZATION=f"token {admin.auth_token.key}",
+        )
 
-    #     response_count = self.client.get(
-    #         reverse("order-stats"),
-    #         data={
-    #             "date_start": "2023-02-01",
-    #             "date_end": "2023-06-01",
-    #             "metric": "count",
-    #         },
-    #         HTTP_AUTHORIZATION=f"token {admin.auth_token.key}",
-    #     )
+        response_count = self.client.get(
+            reverse("orders-stats"),
+            data={
+                "date_start": "2023-02-01",
+                "date_end": "2023-06-01",
+                "metric": "count",
+            },
+            HTTP_AUTHORIZATION=f"token {admin.auth_token.key}",
+        )
 
-    #     # Assert
-    #     self.assertEqual(response_price.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(response_count.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(response_price.data["results"], expected_result_price)
-    #     self.assertEqual(response_count.data["results"], expected_result_count)
+        # Assert
+        self.assertEqual(response_price.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_count.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_price.data["results"], expected_result_price)
+        self.assertEqual(response_count.data["results"], expected_result_count)
 
-    # def test_stats_orders__when_user_is_not_admin__expect_all_orders_of_the_user(
-    #     self,
-    # ):
-    #     user_1_data = {
-    #         "username": "Petko",
-    #         "email": "doncho@abv.bg",
-    #         "password": "Newlife7",
-    #     }
-    #     admin = self._create_user_and_login(self.VALID_USER_DATA, True)
-    #     user_1 = self._create_user_and_login(user_1_data)
+    def test_stats_orders__when_user_is_not_admin__expect_all_orders_of_the_user(
+        self,
+    ):
+        user_1_data = {
+            "username": "Petko",
+            "email": "doncho@abv.bg",
+            "password": "Newlife7",
+        }
+        admin = self._create_user_and_login(self.VALID_USER_DATA, True)
+        user_1 = self._create_user_and_login(user_1_data)
 
-    #     # Arrange
-    #     p1 = Product(title="Mouse", price=10.00, stock=10)
-    #     p2 = Product(title="Keyboard", price=50.00, stock=10)
-    #     p1.save()
-    #     p2.save()
+        # Arrange
+        p1 = Product(title="Mouse", price=10.00, stock=10, base_price=10.00, slug="mouse")
+        p2 = Product(title="Keyboard", price=50.00, stock=10, base_price=10.00, slug="keyboard")
+        p1.save()
+        p2.save()
 
-    #     ord_1 = Order(date="2023-02-01", user=admin)
-    #     ord_2 = Order(date="2023-03-01", user=admin)
-    #     ord_3 = Order(date="2023-04-01", user=admin)
-    #     ord_4 = Order(date="2023-05-01", user=admin)
-    #     ord_5 = Order(date="2023-06-01", user=user_1)
-    #     ord_6 = Order(date="2023-07-01", user=user_1)
-    #     ord_1.save()
-    #     ord_2.save()
-    #     ord_3.save()
-    #     ord_4.save()
-    #     ord_5.save()
-    #     ord_6.save()
+        ord_1 = Order(date="2023-02-01", user=admin)
+        ord_2 = Order(date="2023-03-01", user=admin)
+        ord_3 = Order(date="2023-04-01", user=admin)
+        ord_4 = Order(date="2023-05-01", user=admin)
+        ord_5 = Order(date="2023-06-01", user=user_1)
+        ord_6 = Order(date="2023-07-01", user=user_1)
+        ord_1.save()
+        ord_2.save()
+        ord_3.save()
+        ord_4.save()
+        ord_5.save()
+        ord_6.save()
 
-    #     op1 = OrderProduct(order=ord_1, product=p1, quantity=1, price=p1.price)
-    #     op2 = OrderProduct(order=ord_2, product=p1, quantity=1, price=p1.price)
-    #     op3 = OrderProduct(order=ord_3, product=p1, quantity=1, price=p1.price)
-    #     op4 = OrderProduct(order=ord_4, product=p1, quantity=1, price=p1.price)
-    #     op5 = OrderProduct(order=ord_5, product=p2, quantity=1, price=p2.price)
-    #     op6 = OrderProduct(order=ord_6, product=p2, quantity=4, price=p2.price)
-    #     op1.save()
-    #     op2.save()
-    #     op3.save()
-    #     op4.save()
-    #     op5.save()
-    #     op6.save()
+        op1 = OrderProduct(order=ord_1, product=p1, quantity=1, price=p1.price)
+        op2 = OrderProduct(order=ord_2, product=p1, quantity=1, price=p1.price)
+        op3 = OrderProduct(order=ord_3, product=p1, quantity=1, price=p1.price)
+        op4 = OrderProduct(order=ord_4, product=p1, quantity=1, price=p1.price)
+        op5 = OrderProduct(order=ord_5, product=p2, quantity=1, price=p2.price)
+        op6 = OrderProduct(order=ord_6, product=p2, quantity=4, price=p2.price)
+        op1.save()
+        op2.save()
+        op3.save()
+        op4.save()
+        op5.save()
+        op6.save()
 
-    #     expected_result_price = [
-    #         {"month": "2023 June", "value": 50},
-    #         {"month": "2023 July", "value": 200},
-    #     ]
+        expected_result_price = [
+            {"month": "2023 June", "value": 50},
+            {"month": "2023 July", "value": 200},
+        ]
 
-    #     expected_result_count = [
-    #         {"month": "2023 June", "value": 1},
-    #         {"month": "2023 July", "value": 4},
-    #     ]
+        expected_result_count = [
+            {"month": "2023 June", "value": 1},
+            {"month": "2023 July", "value": 4},
+        ]
 
-    #     # Act
-    #     response_price = self.client.get(
-    #         reverse("order-stats"),
-    #         data={
-    #             "date_start": "2023-02-01",
-    #             "date_end": "2023-07-01",
-    #             "metric": "price",
-    #         },
-    #         HTTP_AUTHORIZATION=f"token {user_1.auth_token.key}",
-    #     )
+        # Act
+        response_price = self.client.get(
+            reverse("orders-stats"),
+            data={
+                "date_start": "2023-02-01",
+                "date_end": "2023-07-01",
+                "metric": "price",
+            },
+            HTTP_AUTHORIZATION=f"token {user_1.auth_token.key}",
+        )
 
-    #     response_count = self.client.get(
-    #         reverse("order-stats"),
-    #         data={
-    #             "date_start": "2023-02-01",
-    #             "date_end": "2023-07-01",
-    #             "metric": "count",
-    #         },
-    #         HTTP_AUTHORIZATION=f"token {user_1.auth_token.key}",
-    #     )
+        response_count = self.client.get(
+            reverse("orders-stats"),
+            data={
+                "date_start": "2023-02-01",
+                "date_end": "2023-07-01",
+                "metric": "count",
+            },
+            HTTP_AUTHORIZATION=f"token {user_1.auth_token.key}",
+        )
 
-    #     # Assert
-    #     self.assertEqual(response_price.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(response_count.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(response_price.data["results"], expected_result_price)
-    #     self.assertEqual(response_count.data["results"], expected_result_count)
+        # Assert
+        self.assertEqual(response_price.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_count.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_price.data["results"], expected_result_price)
+        self.assertEqual(response_count.data["results"], expected_result_count)
 
     def test_stats_orders__when_missing_query_params__should_raise(self):
         user_1_data = {
@@ -407,10 +407,7 @@ class OrderViewSetTests(APITestCase):
         # Assert
         self.assertEqual(response.exception, True)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.data["Error"][:],
-            "There is missing filter field 'date_start'",
-        )
+        self.assertEqual(response.data[0]["message"], "There is missing filter field 'date_start'")
 
         # Act
         response = self.client.get(
@@ -425,10 +422,7 @@ class OrderViewSetTests(APITestCase):
         # Assert
         self.assertEqual(response.exception, True)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.data["Error"][:],
-            "There is missing filter field 'date_end'",
-        )
+        self.assertEqual(response.data[0]["message"], "There is missing filter field 'date_end'")
 
         # Act
         response = self.client.get(
@@ -443,10 +437,7 @@ class OrderViewSetTests(APITestCase):
         # Assert
         self.assertEqual(response.exception, True)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.data["Error"][:],
-            "There is missing filter field 'metric'",
-        )
+        self.assertEqual(response.data[0]["message"], "There is missing filter field 'metric'")
 
         # Act
         response = self.client.get(
@@ -481,8 +472,7 @@ class OrderViewSetTests(APITestCase):
         self.assertEqual(response.exception, True)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            response.data["Error"][:],
-            "Incorrect data format for param 'date_start', should be YYYY-MM-DD",
+            response.data[0]["message"], "Incorrect data format for param 'date_start', should be YYYY-MM-DD"
         )
 
         # Act
@@ -500,8 +490,7 @@ class OrderViewSetTests(APITestCase):
         self.assertEqual(response.exception, True)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            response.data["Error"][:],
-            "Incorrect data format for param 'date_end', should be YYYY-MM-DD",
+            response.data[0]["message"], "Incorrect data format for param 'date_end', should be YYYY-MM-DD"
         )
 
         # Act
@@ -519,8 +508,7 @@ class OrderViewSetTests(APITestCase):
         self.assertEqual(response.exception, True)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            response.data["Error"][:],
-            "Incorrect value for filter field 'metric', correct values are: price, count",
+            response.data[0]["message"], "Incorrect value for filter field 'metric', correct values are: price, count"
         )
 
     def test_stats_orders__when_empty_query_params__should_raise(self):
@@ -545,7 +533,7 @@ class OrderViewSetTests(APITestCase):
         # Assert
         self.assertEqual(response.exception, True)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["Error"][:], "date_start is empty")
+        self.assertEqual(response.data[0]["message"], "date_start is empty")
 
         # Act
         response = self.client.get(
@@ -561,7 +549,7 @@ class OrderViewSetTests(APITestCase):
         # Assert
         self.assertEqual(response.exception, True)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["Error"][:], "date_end is empty")
+        self.assertEqual(response.data[0]["message"], "date_end is empty")
 
         # Act
         response = self.client.get(
@@ -577,7 +565,7 @@ class OrderViewSetTests(APITestCase):
         # Assert
         self.assertEqual(response.exception, True)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["Error"][:], "metric is empty")
+        self.assertEqual(response.data[0]["message"], "metric is empty")
 
     def test_stats_orders__when_query_params_are_more_that_the_required_3__should_raise(
         self,
@@ -605,6 +593,6 @@ class OrderViewSetTests(APITestCase):
         self.assertEqual(response.exception, True)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            response.data["Error"][:],
+            response.data[0]["message"],
             "The query params should be only the following ones - date_start,date_end,metric",
         )

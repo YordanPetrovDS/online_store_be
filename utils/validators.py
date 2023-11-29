@@ -1,9 +1,9 @@
 import datetime
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError as CoreValidationError
 from django.core.validators import FileExtensionValidator
-from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 
 def image_validator(image):
@@ -14,7 +14,7 @@ def image_validator(image):
 
     # Check image file size
     if image.size > max_size_bytes:
-        raise ValidationError(message=f"Maximum allowed file size is {settings.IMAGE_MAX_MB}MB.")
+        raise CoreValidationError(f"Maximum allowed file size is {settings.IMAGE_MAX_MB}MB.")
 
 
 def video_validator(video):
@@ -25,7 +25,7 @@ def video_validator(video):
 
     # Check video file size
     if video.size > max_size_bytes:
-        raise ValidationError(message=f"Maximum allowed file size is {settings.VIDEO_MAX_MB}MB.")
+        raise CoreValidationError(f"Maximum allowed file size is {settings.VIDEO_MAX_MB}MB.")
 
 
 def file_validator(file):
@@ -36,12 +36,12 @@ def file_validator(file):
 
     # Check file size
     if file.size > max_size_bytes:
-        raise ValidationError(message=f"Maximum allowed file size is {settings.FILE_MAX_MB}MB.")
+        raise CoreValidationError(f"Maximum allowed file size is {settings.FILE_MAX_MB}MB.")
 
 
 def validate_no_spaces(value):
     if " " in value:
-        raise ValidationError("No spaces allowed")
+        raise CoreValidationError("No spaces allowed")
 
 
 def validate_query_param(params: list, request, possible_choices: list = []) -> list:
@@ -52,19 +52,17 @@ def validate_query_param(params: list, request, possible_choices: list = []) -> 
             param_value = request.query_params[param]
             param_value_list.append(param_value)
         except Exception:
-            raise serializers.ValidationError(detail={"Error": f"There is missing filter field '{param}'"})
+            raise ValidationError(f"There is missing filter field '{param}'")
         # Check if parameter values is empty
         if not param_value:
-            raise serializers.ValidationError(detail={"Error": f"{param} is empty"})
+            raise ValidationError(f"{param} is empty")
 
         # Check if parameter values for date is in correct format
         if param.find("date") != -1:
             try:
                 datetime.datetime.strptime(param_value, "%Y-%m-%d")
             except Exception:
-                raise serializers.ValidationError(
-                    detail={"Error": f"Incorrect data format for param '{param}', should be YYYY-MM-DD"}
-                )
+                raise ValidationError(f"Incorrect data format for param '{param}', should be YYYY-MM-DD")
 
         # Check if parameter value for metric is one of the possible choices
         if param == "metric" and param_value not in possible_choices:
@@ -72,16 +70,12 @@ def validate_query_param(params: list, request, possible_choices: list = []) -> 
                 f"Incorrect value for filter field '{param}', " f"correct values are: {', '.join(possible_choices)}"
             )
 
-            raise serializers.ValidationError(
-                detail={"Error": error_message},
-            )
+            raise ValidationError(error_message)
 
     # Check if parameters are only three
     if (len(request.query_params) > 3 and "page" not in request.query_params) or (
         len(request.query_params) > 4 and "page" in request.query_params
     ):
-        raise serializers.ValidationError(
-            detail={"Error": f"The query params should be only the following ones - {','.join(params)}"}
-        )
+        raise ValidationError(f"The query params should be only the following ones - {','.join(params)}")
 
     return param_value_list
