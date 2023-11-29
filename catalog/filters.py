@@ -3,7 +3,13 @@ from typing import List
 from django.db.models import OuterRef, QuerySet, Subquery
 from django_filters import rest_framework as filters
 
-from catalog.models import Order, OrderProduct, Product, ProductAttributeOption
+from catalog.models import (
+    Order,
+    OrderProduct,
+    Product,
+    ProductAttributeOption,
+    Promotion,
+)
 
 
 class ProductFilter(filters.FilterSet):
@@ -63,3 +69,14 @@ class OrderProductFilter(filters.FilterSet):
     class Meta:
         model = OrderProduct
         fields = ["quantity", "price"]
+
+
+class PromotionFilter(filters.FilterSet):
+    class Meta:
+        model = Promotion
+        fields = {
+            "valid_from": ["lte", "gte"],
+            "valid_until": ["lte", "gte"],
+            "title": ["icontains"],
+            "discount_percent": ["lte", "gte"],
+        }

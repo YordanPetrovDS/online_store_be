@@ -4,8 +4,8 @@ from django_filters import rest_framework as filters
 from rest_framework import permissions
 from rest_framework.response import Response
 
-from .pagination import CustomPagination
-from .permissions import IsOwnerOrAdminReadOnly
+from common.pagination import CustomPagination
+from common.permissions import IsOwnerOrAdminReadOnly
 
 
 class DefaultsMixin(object):

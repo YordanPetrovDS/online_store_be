@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import dj_database_url
@@ -30,6 +31,7 @@ THIRD_PARTY_APPS = (
     "corsheaders",
     "rangefilter",
     "rest_framework.authtoken",
+    "drf_spectacular",
     "drf_yasg",
     "ckeditor",
     "ckeditor_uploader",
@@ -65,7 +67,36 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.BasicAuthentication",
     ],
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
+    # Disables browsable api (we have swagger already)
+    "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "EXCEPTION_HANDLER": "utils.exception_handling.custom_api_exception_handler",
 }
+
+
+IS_SWAGGER_UI_ENABLED = config("IS_SWAGGER_UI_ENABLED", default=True, cast=bool)
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Online Store API",
+    "DESCRIPTION": "Online Store API",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SCHEMA_PATH_PREFIX": "/api/",
+    "COMPONENT_SPLIT_REQUEST": True,
+}
+
+# Storage settings
+STORAGE_BACKEND_FS = "django.core.files.storage.FileSystemStorage"
+STORAGE_BACKEND_AWS = "storages.backends.s3boto3.S3Boto3Storage"
+DEFAULT_FILE_STORAGE = config("DEFAULT_FILE_STORAGE", default=STORAGE_BACKEND_FS)
+if DEFAULT_FILE_STORAGE == STORAGE_BACKEND_AWS:
+    AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_REGION_NAME = config("AWS_S3_REGION_NAME")
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_QUERYSTRING_AUTH = False
+    if config("AWS_S3_CUSTOM_DOMAIN", ""):
+        AWS_S3_CUSTOM_DOMAIN = config("AWS_S3_CUSTOM_DOMAIN")
 
 ROOT_URLCONF = "online_store_api.urls"
 
@@ -194,18 +225,61 @@ CKEDITOR_CONFIGS[CKEDITOR_CONFIG_SMALL]["external_plugin_resources"] = ckeditor_
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGGING_LEVEL = "DEBUG"
-if is_production():
-    LOGGING_LEVEL = "INFO"
-elif is_test():
-    LOGGING_LEVEL = "CRITICAL"
+
+LOGS_DIR = "logs/"
+# Check if the folder exists
+if not os.path.exists(LOGS_DIR):
+    # Create the folder
+    os.makedirs(LOGS_DIR)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "error_file": {
+            "level": "ERROR",
+            "class": "logging.FileHandler",
+            "filename": Path(BASE_DIR, LOGS_DIR, "error.log"),
+        },
+        "system_events_file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": Path(BASE_DIR, LOGS_DIR, "system_events.log"),
+        },
+    },
+    "loggers": {
+        "": {
+            "handlers": ["error_file"],
+            "level": "ERROR",
+            "propagate": True,
+        },
+        # Log for system background events
+        "system_events": {
+            "handlers": ["system_events_file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
+
+IS_SYSTEM_EVENTS_LOGGING_ENABLED = config("IS_SYSTEM_EVENTS_LOGGING_ENABLED", True, cast=bool)
 
 # Image limits
-IMAGE_MAX_WIDTH = config("IMAGE_MAX_WIDTH", 800, cast=int)
-IMAGE_MAX_HEIGHT = config("IMAGE_MAX_HEIGHT", 600, cast=int)
-IMAGE_MAX_MB = config("IMAGE_MAX_MB", 3, cast=int)
+IMAGE_MAX_MB = config("IMAGE_MAX_MB", 5, cast=int)
 IMAGE_VALID_EXTENSIONS = config("IMAGE_VALID_EXTENSIONS", "png,jpeg,jpg").lower().split(",")
 
 # Video limits
 VIDEO_MAX_MB = config("VIDEO_MAX_MB", 50, cast=int)
-VIDEO_VALID_EXTENSIONS = config("VIDEO_VALID_EXTENSIONS", "mp4,avi").lower().split(",")
+VIDEO_VALID_EXTENSIONS = config("VIDEO_VALID_EXTENSIONS", "mp4").lower().split(",")
+
+# File limits
+FILE_MAX_MB = config("FILE_MAX_MB", 5, cast=int)
+FILE_VALID_EXTENSIONS = config("FILE_VALID_EXTENSIONS", "pdf,doc,docx,txt,ppt,xls,xlsx").lower().split(",")
+
+# WebP, JPEG or PNG images compression
+TINIFY_API_KEY = config("TINIFY_API_KEY", default="")
+TINIFY_COMPRESSION_ENABLED = config("TINIFY_COMPRESSION_ENABLED", cast=bool, default=False)
+
+# Subdirectories (=prefixes in S3) for files upload
+PRODUCTS_IMAGES_UPLOAD_PREFIX = "products_images"
+PRODUCTS_VIDEOS_UPLOAD_PREFIX = "products_videos"

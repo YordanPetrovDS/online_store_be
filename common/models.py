@@ -1,5 +1,12 @@
+from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile, UploadedFile
 from django.db import models
+from django.db.models import ImageField
+from django.db.models.fields.files import ImageFieldFile
 from django.utils import timezone
+from tinify import Source, tinify
+
+from utils.logging import log_error
 
 
 class ActiveObjectsManager(models.Manager):
@@ -32,3 +39,30 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class TinifiedImageFieldFile(ImageFieldFile):
+    """Before saving the uploaded image, compress it using Tinify API"""
+
+    def save(self, name, content, save=True):
+        if settings.TINIFY_COMPRESSION_ENABLED:
+            content = self.compress_image_with_tinify(name, content)
+        super().save(name, content, save)
+
+    @staticmethod
+    def compress_image_with_tinify(name: str, content: UploadedFile) -> UploadedFile:
+        """Replace uploaded image with compressed one"""
+        try:
+            tinify.key = settings.TINIFY_API_KEY
+            source: Source = tinify.from_buffer(content.read())
+            compressed_content = SimpleUploadedFile(name, source.to_buffer(), content.content_type)
+            # We do not need the old uploaded file anymore
+            content.close()
+            return compressed_content
+        except tinify.Error as e:
+            log_error(e.message)
+        return content
+
+
+class TinifiedImageField(ImageField):
+    attr_class = TinifiedImageFieldFile

@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.exceptions import NotAcceptable
 
@@ -6,12 +7,16 @@ from catalog.models import (
     Attribute,
     AttributeOption,
     Brand,
+    DiscountCode,
     Order,
     OrderProduct,
     Product,
     ProductAttribute,
     ProductAttributeOption,
     ProductCategory,
+    ProductDocument,
+    ProductMultimedia,
+    Promotion,
 )
 
 
@@ -120,6 +125,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         model = ProductCategory
         fields = ["id", "title", "parent", "children", "attributes"]
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_children(self, obj):
         if obj.children.exists():
             return ProductCategorySerializer(obj.children.all(), many=True).data
@@ -135,4 +141,28 @@ class ProductAttributeOptionSerializer(serializers.ModelSerializer):
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
+        fields = "__all__"
+
+
+class DiscountCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DiscountCode
+        fields = "__all__"
+
+
+class ProductMultimediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductMultimedia
+        fields = ["id", "product", "image", "video"]
+
+
+class ProductDocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductDocument
+        fields = ["id", "product", "title", "file"]
+
+
+class PromotionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Promotion
         fields = "__all__"

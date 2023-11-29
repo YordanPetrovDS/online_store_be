@@ -3,7 +3,6 @@ import datetime
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
-from PIL import Image
 from rest_framework import serializers
 
 
@@ -17,14 +16,6 @@ def image_validator(image):
     if image.size > max_size_bytes:
         raise ValidationError(message=f"Maximum allowed file size is {settings.IMAGE_MAX_MB}MB.")
 
-    # Check image dimensions
-    img = Image.open(image)
-    width, height = img.size
-    if width > settings.IMAGE_MAX_WIDTH or height > settings.IMAGE_MAX_HEIGHT:
-        raise ValidationError(
-            message=f"Maximum allowed dimensions are {settings.IMAGE_MAX_WIDTH}x{settings.IMAGE_MAX_HEIGHT}."
-        )
-
 
 def video_validator(video):
     max_size_bytes = settings.VIDEO_MAX_MB * 1024**2
@@ -35,6 +26,17 @@ def video_validator(video):
     # Check video file size
     if video.size > max_size_bytes:
         raise ValidationError(message=f"Maximum allowed file size is {settings.VIDEO_MAX_MB}MB.")
+
+
+def file_validator(file):
+    max_size_bytes = settings.FILE_MAX_MB * 1024**2
+
+    # Check file format
+    FileExtensionValidator(allowed_extensions=settings.FILE_VALID_EXTENSIONS)(file)
+
+    # Check file size
+    if file.size > max_size_bytes:
+        raise ValidationError(message=f"Maximum allowed file size is {settings.FILE_MAX_MB}MB.")
 
 
 def validate_no_spaces(value):

@@ -6,28 +6,41 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from catalog.filters import OrderFilter, OrderProductFilter, ProductFilter
+from catalog.filters import (
+    OrderFilter,
+    OrderProductFilter,
+    ProductFilter,
+    PromotionFilter,
+)
 from catalog.models import (
     Attribute,
     AttributeOption,
     Brand,
+    DiscountCode,
     Order,
     OrderProduct,
     Product,
     ProductAttribute,
     ProductAttributeOption,
     ProductCategory,
+    ProductDocument,
+    ProductMultimedia,
+    Promotion,
 )
 from catalog.serializers import (
     AttributeOptionSerializer,
     AttributeSerializer,
     BrandSerializer,
+    DiscountCodeSerializer,
     OrderProductSerializer,
     OrderSerializer,
     ProductAttributeOptionSerializer,
     ProductAttributeSerializer,
     ProductCategorySerializer,
+    ProductDocumentSerializer,
+    ProductMultimediaSerializer,
     ProductSerializer,
+    PromotionSerializer,
 )
 from common.mixins import DefaultsMixin
 from utils.validators import validate_query_param
@@ -150,3 +163,24 @@ class ProductAttributeOptionViewSet(viewsets.ModelViewSet):
 class BrandViewSet(viewsets.ModelViewSet):
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
+
+
+class DiscountCodeViewSet(viewsets.ModelViewSet):
+    queryset = DiscountCode.objects.all()
+    serializer_class = DiscountCodeSerializer
+
+
+class ProductMultimediaViewSet(viewsets.ModelViewSet):
+    queryset = ProductMultimedia.objects.all()
+    serializer_class = ProductMultimediaSerializer
+
+
+class ProductDocumentViewSet(viewsets.ModelViewSet):
+    queryset = ProductDocument.objects.all()
+    serializer_class = ProductDocumentSerializer
+
+
+class PromotionViewSet(viewsets.ModelViewSet):
+    queryset = Promotion.objects.all()
+    serializer_class = PromotionSerializer
+    ilter_class = PromotionFilter
