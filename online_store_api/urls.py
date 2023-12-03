@@ -1,36 +1,28 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path, re_path
-from drf_yasg import openapi
-from drf_yasg.views import get_schema_view
-
-schema_view = get_schema_view(
-    openapi.Info(
-        #  add your swagger doc title
-        title="Online Store API",
-        #  version of the swagger doc
-        default_version="v1",
-        # first line that appears on the top of the doc
-        description="Test description",
-    ),
-    public=True,
-)
+from django.urls import include, path
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/auth/", include("accounts.urls")),
-    path("api/", include("catalog.urls")),
-    re_path("^api/", include("cms.urls", namespace="cms")),
-    re_path("^api/", include("blog.urls", namespace="blog")),
-    re_path(
-        r"^swagger/$",
-        schema_view.with_ui("swagger", cache_timeout=0),
-        name="schema-swagger-ui",
-    ),
-    re_path(r"^ckeditor/", include("ckeditor_uploader.urls")),
+    path("api/accounts/", include("accounts.urls"), name="accounts"),
+    path("api/catalog/", include("catalog.urls"), name="catalog"),
+    path("api/cms/", include("cms.urls"), name="cms"),
+    path("api/blog/", include("blog.urls"), name="blog"),
+    path("ckeditor/", include("ckeditor_uploader.urls"), name="ckeditor_uploader"),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+if settings.IS_SWAGGER_UI_ENABLED:
+    urlpatterns += [
+        path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+        path(
+            "swagger/",
+            SpectacularSwaggerView.as_view(url_name="schema"),
+            name="swagger-ui",
+        ),
+    ]

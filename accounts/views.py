@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model, login, logout
+from drf_spectacular.utils import extend_schema
 from rest_framework import authentication
 from rest_framework import generics as api_generic_views
 from rest_framework import permissions, status
@@ -36,6 +37,7 @@ class LoginView(auth_views.ObtainAuthToken):
         )
 
 
+@extend_schema(request=None, responses={200: {"type": "object", "properties": {"message": None}}})
 class LogoutView(api_views.APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.TokenAuthentication]

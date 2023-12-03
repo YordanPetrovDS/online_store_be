@@ -5,12 +5,16 @@ from catalog.views import (
     AttributeOptionViewSet,
     AttributeViewSet,
     BrandViewSet,
+    DiscountCodeViewSet,
     OrderProductViewSet,
     OrderViewSet,
     ProductAttributeOptionViewSet,
     ProductAttributeViewSet,
     ProductCategoryViewSet,
+    ProductDocumentViewSet,
+    ProductMultimediaViewSet,
     ProductViewSet,
+    PromotionViewSet,
 )
 
 router = routers.DefaultRouter()
@@ -23,6 +27,10 @@ router.register(r"attribute-options", AttributeOptionViewSet, basename="attribut
 router.register(r"product-attributes", ProductAttributeViewSet, basename="product-attributes")
 router.register(r"product-attribute-options", ProductAttributeOptionViewSet, basename="product-attribute-options")
 router.register(r"brands", BrandViewSet, basename="brands")
+router.register(r"discount-codes", DiscountCodeViewSet, basename="discount-codes")
+router.register(r"product-multimedia", ProductMultimediaViewSet, basename="product-multimedia")
+router.register(r"product-documents", ProductDocumentViewSet, basename="product-documents")
+router.register(r"promotions", PromotionViewSet, basename="promotions")
 
 urlpatterns = [
     path("", include(router.urls)),

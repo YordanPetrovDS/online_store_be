@@ -1,17 +1,22 @@
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
-from rest_framework.exceptions import NotAcceptable
+from rest_framework.exceptions import NotAcceptable, ValidationError
 
 from catalog.models import (
     Attribute,
     AttributeOption,
     Brand,
+    DiscountCode,
     Order,
     OrderProduct,
     Product,
     ProductAttribute,
     ProductAttributeOption,
     ProductCategory,
+    ProductDocument,
+    ProductMultimedia,
+    Promotion,
 )
 
 
@@ -61,15 +66,15 @@ class OrderProductSerializer(serializers.ModelSerializer):
         order = get_object_or_404(Order, pk=validate_data["order"].id)
 
         if self.context["request"].user.id != order.user.id:
-            raise serializers.ValidationError(detail={"Error": "This order is not yours. Please enter your order id."})
+            raise ValidationError("This order is not yours. Please enter your order id.")
 
         try:
             quantity = int(validate_data["quantity"])
         except Exception:
-            raise serializers.ValidationError(detail={"Error": "Please Enter Your Quantity"})
+            raise ValidationError("Please Enter Your Quantity")
 
         if quantity > product.stock:
-            raise NotAcceptable(detail={"Error": "You order quantity more than the seller have"})
+            raise NotAcceptable("You order quantity more than the seller have")
 
         validate_data["price"] = product.price
 
@@ -83,7 +88,7 @@ class OrderProductSerializer(serializers.ModelSerializer):
         try:
             quantity = int(validate_data["quantity"])
         except Exception:
-            raise serializers.ValidationError(detail={"Error": "Please Enter Your Quantity"})
+            raise ValidationError("Please Enter Your Quantity")
 
         if validate_data["product"] != instance.product:
             product_old: Product = instance.product
@@ -96,7 +101,7 @@ class OrderProductSerializer(serializers.ModelSerializer):
             product.save()
 
         if quantity > product.stock:
-            raise NotAcceptable(detail={"Error": "You order quantity more than the seller have"})
+            raise NotAcceptable("You order quantity more than the seller have")
 
         instance.quantity = quantity
         instance.order = order
@@ -120,6 +125,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         model = ProductCategory
         fields = ["id", "title", "parent", "children", "attributes"]
 
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_children(self, obj):
         if obj.children.exists():
             return ProductCategorySerializer(obj.children.all(), many=True).data
@@ -135,4 +141,28 @@ class ProductAttributeOptionSerializer(serializers.ModelSerializer):
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
+        fields = "__all__"
+
+
+class DiscountCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DiscountCode
+        fields = "__all__"
+
+
+class ProductMultimediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductMultimedia
+        fields = ["id", "product", "image", "video"]
+
+
+class ProductDocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductDocument
+        fields = ["id", "product", "title", "file"]
+
+
+class PromotionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Promotion
         fields = "__all__"

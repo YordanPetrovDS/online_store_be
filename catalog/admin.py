@@ -1,4 +1,8 @@
+from adminsortable2.admin import SortableAdminMixin
 from django.contrib import admin
+from django.utils import timezone
+from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 from mptt.admin import MPTTModelAdmin
 from rangefilter.filters import DateRangeFilter, NumericRangeFilter
@@ -7,13 +11,48 @@ from catalog.models import (
     Attribute,
     AttributeOption,
     Brand,
+    DiscountCode,
     Order,
     OrderProduct,
     Product,
     ProductAttribute,
     ProductAttributeOption,
     ProductCategory,
+    ProductDocument,
+    ProductMultimedia,
+    Promotion,
 )
+
+
+class ValidityFilter(admin.SimpleListFilter):
+    title = "Validity"
+    parameter_name = "validity"
+
+    def lookups(self, request, model_admin):
+        return (
+            ("valid", "Currently Valid"),
+            ("expired", "Expired"),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == "valid":
+            return queryset.filter(valid_from__lte=timezone.now(), valid_until__gte=timezone.now())
+        if self.value() == "expired":
+            return queryset.filter(valid_until__lt=timezone.now())
+
+
+class ProductListFilter(admin.SimpleListFilter):
+    title = _("product")  # or use a more descriptive title
+    parameter_name = "product"
+
+    def lookups(self, request, model_admin):
+        products = Product.objects.all()
+        return [(product.id, product.title) for product in products]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(product__id=self.value())
+        return queryset
 
 
 @admin.register(Product)
@@ -96,3 +135,56 @@ class ProductAttributeOptionAdmin(admin.ModelAdmin):
 @admin.register(Brand)
 class BrandAdmin(TranslationAdmin):
     pass
+
+
+@admin.register(DiscountCode)
+class DiscountCodeAdmin(admin.ModelAdmin):
+    list_display = ["code", "discount_type", "discount_value", "valid_from", "valid_until", "allowed_user"]
+    list_filter = (
+        "discount_type",
+        "allowed_user",
+        ValidityFilter,
+        "allowed_brands",
+        "allowed_categories",
+        "allowed_products",
+    )
+
+
+@admin.register(ProductMultimedia)
+class ProductMultimediaAdmin(admin.ModelAdmin):
+    list_display = ("product", "image_link", "video_link")
+
+    def image_link(self, obj):
+        if obj.image:
+            return format_html('<a href="{}">Image</a>', obj.image.url)
+        return "-"
+
+    image_link.short_description = "Image"
+
+    def video_link(self, obj):
+        if obj.video:
+            return format_html('<a href="{}">Video</a>', obj.video.url)
+        return "-"
+
+    video_link.short_description = "Video"
+
+
+@admin.register(ProductDocument)
+class ProductDocumentAdmin(SortableAdminMixin, admin.ModelAdmin):
+    list_display = ("title", "product", "file_link")
+    search_fields = ("title", "product__title")
+    list_filter = (ProductListFilter,)
+
+    def file_link(self, obj):
+        if obj.file:
+            return format_html('<a href="{}">File</a>', obj.file.url)
+        return "-"
+
+    file_link.short_description = "File"
+
+
+@admin.register(Promotion)
+class PromotionAdmin(admin.ModelAdmin):
+    list_display = ("title", "valid_from", "valid_until", "discount_percent")
+    list_filter = ("valid_from", "valid_until", "discount_percent", ValidityFilter)
+    search_fields = ("title",)

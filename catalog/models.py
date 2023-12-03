@@ -1,14 +1,17 @@
 import datetime
 
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 
 from cms.models import Page
-from common.models import BaseModel
+from common.models import BaseModel, TinifiedImageField
+from utils.validators import file_validator, image_validator, video_validator
 
 UserModel = get_user_model()
 
@@ -23,6 +26,11 @@ class PriceChangeType(models.TextChoices):
     REDUCE = "reduce", _("Reduce")
     INCREASE = "increase", _("Increase")
     REPLACE = "replace", _("Replace")
+
+
+class DiscountType(models.TextChoices):
+    AMOUNT = "amount", _("Amount")
+    PERCENT = "percent", _("Percent")
 
 
 class Attribute(BaseModel):
@@ -167,3 +175,91 @@ class OrderProduct(BaseModel):
 
     class Meta:
         ordering = ["id"]
+
+
+class DiscountCode(BaseModel):
+    valid_from = models.DateTimeField()
+    valid_until = models.DateTimeField()
+    allowed_user = models.ForeignKey(
+        UserModel,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="discount_codes",
+    )
+    allowed_brands = models.ManyToManyField(Brand, blank=True, related_name="discount_codes")
+    allowed_categories = models.ManyToManyField(ProductCategory, blank=True, related_name="discount_codes")
+    allowed_products = models.ManyToManyField(Product, blank=True, related_name="discount_codes")
+    used_for_orders = models.ManyToManyField(Order, blank=True, related_name="discount_codes")
+    code = models.CharField(max_length=6, unique=True, blank=True, null=True)
+    discount_type = models.CharField(
+        max_length=7,
+        choices=DiscountType.choices,
+        default=DiscountType.AMOUNT,
+    )
+    discount_value = models.PositiveIntegerField()
+    max_uses = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return self.code
+
+    def clean(self):
+        if self.discount_type == "percent" and not (1 <= self.discount_value <= 100):
+            raise ValidationError("For percent discounts, the value must be between 1 and 100.")
+
+    def save(self, *args, **kwargs):
+        """
+        Override the save method to include custom validation.
+        """
+        self.full_clean()
+        super(DiscountCode, self).save(*args, **kwargs)
+
+
+class ProductMultimedia(BaseModel):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="multimedia")
+    image = TinifiedImageField(
+        upload_to=settings.PRODUCTS_IMAGES_UPLOAD_PREFIX,
+        blank=True,
+        null=True,
+        validators=[image_validator],
+    )
+    video = models.FileField(
+        upload_to=settings.PRODUCTS_VIDEOS_UPLOAD_PREFIX,
+        blank=True,
+        null=True,
+        validators=[video_validator],
+    )
+
+    def __str__(self):
+        return f"{self.product.title}"
+
+    class Meta:
+        ordering = ["id"]
+
+
+class ProductDocument(BaseModel):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="documents")
+    title = models.CharField(_("Title"), max_length=128)
+    file = models.FileField(upload_to="product_documents/", validators=[file_validator])
+
+    class Meta:
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.title
+
+
+class Promotion(models.Model):
+    valid_from = models.DateTimeField()
+    valid_until = models.DateTimeField()
+    title = models.CharField(max_length=128)
+    allowed_brands = models.ManyToManyField(Brand, blank=True, related_name="promotions")
+    allowed_categories = models.ManyToManyField(ProductCategory, blank=True, related_name="promotions")
+    allowed_products = models.ManyToManyField(Product, blank=True, related_name="promotions")
+    discount_percent = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ["valid_from"]

@@ -1,6 +1,6 @@
 from modeltranslation.translator import TranslationOptions, register
 
-from catalog.models import Brand, Product
+from catalog.models import Brand, Product, ProductDocument
 
 
 @register(Brand)
@@ -11,3 +11,8 @@ class BrandTranslationOptions(TranslationOptions):
 @register(Product)
 class ProductTranslationOptions(TranslationOptions):
     pass
+
+
+@register(ProductDocument)
+class ProductDocumentTranslationOptions(TranslationOptions):
+    fields = ("title",)
