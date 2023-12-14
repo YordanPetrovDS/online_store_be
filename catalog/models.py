@@ -11,7 +11,12 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 from cms.models import Page
 from common.models import BaseModel, TinifiedImageField
-from utils.validators import file_validator, image_validator, video_validator
+from utils.validators import (
+    document_validator,
+    dowload_file_validator,
+    image_validator,
+    video_validator,
+)
 
 UserModel = get_user_model()
 
@@ -240,7 +245,7 @@ class ProductMultimedia(BaseModel):
 class ProductDocument(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="documents")
     title = models.CharField(_("Title"), max_length=128)
-    file = models.FileField(upload_to="product_documents/", validators=[file_validator])
+    file = models.FileField(upload_to=settings.PRODUCTS_DOCUMENTS_UPLOAD_PREFIX, validators=[document_validator])
 
     class Meta:
         ordering = ["id"]
@@ -249,7 +254,7 @@ class ProductDocument(BaseModel):
         return self.title
 
 
-class Promotion(models.Model):
+class Promotion(BaseModel):
     valid_from = models.DateTimeField()
     valid_until = models.DateTimeField()
     title = models.CharField(max_length=128)
@@ -263,3 +268,15 @@ class Promotion(models.Model):
 
     class Meta:
         ordering = ["valid_from"]
+
+
+class ProductDownload(BaseModel):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="downloads")
+    title = models.CharField(max_length=128)
+    file = models.FileField(upload_to=settings.PRODUCTS_DOWNLOADS_UPLOAD_PREFIX, validators=[dowload_file_validator])
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ["id"]

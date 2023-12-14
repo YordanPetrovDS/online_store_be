@@ -24,6 +24,7 @@ from catalog.models import (
     ProductAttributeOption,
     ProductCategory,
     ProductDocument,
+    ProductDownload,
     ProductMultimedia,
     Promotion,
 )
@@ -38,6 +39,7 @@ from catalog.serializers import (
     ProductAttributeSerializer,
     ProductCategorySerializer,
     ProductDocumentSerializer,
+    ProductDownloadSerializer,
     ProductMultimediaSerializer,
     ProductSerializer,
     PromotionSerializer,
@@ -183,4 +185,9 @@ class ProductDocumentViewSet(viewsets.ModelViewSet):
 class PromotionViewSet(viewsets.ModelViewSet):
     queryset = Promotion.objects.all()
     serializer_class = PromotionSerializer
-    ilter_class = PromotionFilter
+    filter_class = PromotionFilter
+
+
+class ProductDownloadViewSet(viewsets.ModelViewSet):
+    queryset = ProductDownload.objects.all()
+    serializer_class = ProductDownloadSerializer

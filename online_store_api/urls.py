@@ -10,6 +10,9 @@ urlpatterns = [
     path("api/catalog/", include("catalog.urls"), name="catalog"),
     path("api/cms/", include("cms.urls"), name="cms"),
     path("api/blog/", include("blog.urls"), name="blog"),
+    path("api/geo/", include("geo.urls"), name="geo"),
+    path("api/localize/", include("localize.urls"), name="localize"),
+    path("api/stores/", include("stores.urls"), name="stores"),
     path("ckeditor/", include("ckeditor_uploader.urls"), name="ckeditor_uploader"),
 ]
 

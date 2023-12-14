@@ -15,6 +15,7 @@ from catalog.models import (
     ProductAttributeOption,
     ProductCategory,
     ProductDocument,
+    ProductDownload,
     ProductMultimedia,
     Promotion,
 )
@@ -166,3 +167,9 @@ class PromotionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Promotion
         fields = "__all__"
+
+
+class ProductDownloadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductDownload
+        fields = ["id", "product", "title", "file"]

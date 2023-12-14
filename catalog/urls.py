@@ -12,6 +12,7 @@ from catalog.views import (
     ProductAttributeViewSet,
     ProductCategoryViewSet,
     ProductDocumentViewSet,
+    ProductDownloadViewSet,
     ProductMultimediaViewSet,
     ProductViewSet,
     PromotionViewSet,
@@ -31,6 +32,7 @@ router.register(r"discount-codes", DiscountCodeViewSet, basename="discount-codes
 router.register(r"product-multimedia", ProductMultimediaViewSet, basename="product-multimedia")
 router.register(r"product-documents", ProductDocumentViewSet, basename="product-documents")
 router.register(r"promotions", PromotionViewSet, basename="promotions")
+router.register(r"product-downloads", ProductDownloadViewSet, basename="product-downloads")
 
 urlpatterns = [
     path("", include(router.urls)),

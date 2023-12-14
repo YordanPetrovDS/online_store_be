@@ -19,6 +19,7 @@ from catalog.models import (
     ProductAttributeOption,
     ProductCategory,
     ProductDocument,
+    ProductDownload,
     ProductMultimedia,
     Promotion,
 )
@@ -42,7 +43,7 @@ class ValidityFilter(admin.SimpleListFilter):
 
 
 class ProductListFilter(admin.SimpleListFilter):
-    title = _("product")  # or use a more descriptive title
+    title = _("product")
     parameter_name = "product"
 
     def lookups(self, request, model_admin):
@@ -188,3 +189,17 @@ class PromotionAdmin(admin.ModelAdmin):
     list_display = ("title", "valid_from", "valid_until", "discount_percent")
     list_filter = ("valid_from", "valid_until", "discount_percent", ValidityFilter)
     search_fields = ("title",)
+
+
+@admin.register(ProductDownload)
+class ProductDownloadAdmin(SortableAdminMixin, admin.ModelAdmin):
+    list_display = ("title", "product", "file_link")
+    search_fields = ("title", "product__name")
+    list_filter = (ProductListFilter,)
+
+    def file_link(self, obj):
+        if obj.file:
+            return format_html('<a href="{}">File</a>', obj.file.url)
+        return "-"
+
+    file_link.short_description = "File"
