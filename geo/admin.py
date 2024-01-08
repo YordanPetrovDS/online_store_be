@@ -18,6 +18,6 @@ class CountryAdmin(admin.ModelAdmin):
 
 @admin.register(State)
 class StateAdmin(admin.ModelAdmin):
-    list_display = ("title", "code", "region")
-    search_fields = ("title", "code", "region__title")
-    list_filter = ("region",)
+    list_display = ("title", "code", "country")
+    search_fields = ("title", "code", "country__title")
+    list_filter = ("country",)

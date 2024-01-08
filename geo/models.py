@@ -28,7 +28,7 @@ class Country(BaseModel):
 
 
 class State(BaseModel):
-    region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="states")
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="states")
     title = models.CharField(max_length=128)
     code = models.CharField(max_length=2, unique=True)
 

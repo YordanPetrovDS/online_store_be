@@ -18,4 +18,4 @@ class CountrySerializer(serializers.ModelSerializer):
 class StateSerializer(serializers.ModelSerializer):
     class Meta:
         model = State
-        fields = ["id", "region", "title", "code"]
+        fields = ["id", "country", "title", "code"]
