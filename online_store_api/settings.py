@@ -45,6 +45,9 @@ PROJECT_APPS = (
     "catalog",
     "utils",
     "blog",
+    "geo",
+    "localize",
+    "stores",
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
@@ -272,9 +275,17 @@ IMAGE_VALID_EXTENSIONS = config("IMAGE_VALID_EXTENSIONS", "png,jpeg,jpg").lower(
 VIDEO_MAX_MB = config("VIDEO_MAX_MB", 50, cast=int)
 VIDEO_VALID_EXTENSIONS = config("VIDEO_VALID_EXTENSIONS", "mp4").lower().split(",")
 
-# File limits
-FILE_MAX_MB = config("FILE_MAX_MB", 5, cast=int)
-FILE_VALID_EXTENSIONS = config("FILE_VALID_EXTENSIONS", "pdf,doc,docx,txt,ppt,xls,xlsx").lower().split(",")
+# Document file limits
+DOCUMENT_MAX_MB = config("DOCUMENT_MAX_MB", 5, cast=int)
+DOCUMENT_VALID_EXTENSIONS = config("DOCUMENT_VALID_EXTENSIONS", "pdf,doc,docx,txt,ppt,xls,xlsx").lower().split(",")
+
+# Download file limits
+DOWNLOAD_FILE_MAX_MB = config("FILE_MAX_MB", 5, cast=int)
+DOWNLOAD_FILE_VALID_EXTENSIONS = (
+    config("FILE_VALID_EXTENSIONS", "pdf,doc,docx,txt,ppt,xls,xlsx,zip,rar,mp3,mp4,avi,mov,jpg,jpeg,gif,png")
+    .lower()
+    .split(",")
+)
 
 # WebP, JPEG or PNG images compression
 TINIFY_API_KEY = config("TINIFY_API_KEY", default="")
@@ -283,3 +294,8 @@ TINIFY_COMPRESSION_ENABLED = config("TINIFY_COMPRESSION_ENABLED", cast=bool, def
 # Subdirectories (=prefixes in S3) for files upload
 PRODUCTS_IMAGES_UPLOAD_PREFIX = "products_images"
 PRODUCTS_VIDEOS_UPLOAD_PREFIX = "products_videos"
+PRODUCTS_DOCUMENTS_UPLOAD_PREFIX = "products_documents"
+PRODUCTS_DOWNLOADS_UPLOAD_PREFIX = "products_downloads"
+LAGUAGES_ICONS_UPLOAD_PREFIX = "languages_icons"
+STORE_LOGOS_UPLOAD_PREFIX = "stores_logos"
+STORE_LOCATIONS_IMAGES_UPLOAD_PREFIX = "stores_locations_images"

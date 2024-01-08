@@ -2,7 +2,7 @@ from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 
 from common.models import BaseModel
-from utils.validators import image_validator, validate_no_spaces
+from utils.validators import image_validator, validate_no_spaces, video_validator
 
 
 class Page(BaseModel):
@@ -27,7 +27,7 @@ class Banner(BaseModel):
     is_active = models.BooleanField(default=False)
     page = models.ForeignKey(Page, on_delete=models.PROTECT, related_name="banners")
     image = models.ImageField(blank=True, null=True, validators=[image_validator])
-    video = models.FileField(blank=True, null=True)
+    video = models.FileField(blank=True, null=True, validators=[video_validator])
     url = models.URLField(max_length=256, blank=True, null=True)
     sort_order = models.PositiveIntegerField(default=0, blank=False, null=False)
 

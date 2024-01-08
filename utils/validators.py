@@ -1,4 +1,5 @@
 import datetime
+from typing import List
 
 from django.conf import settings
 from django.core.exceptions import ValidationError as CoreValidationError
@@ -6,37 +7,31 @@ from django.core.validators import FileExtensionValidator
 from rest_framework.exceptions import ValidationError
 
 
-def image_validator(image):
-    max_size_bytes = settings.IMAGE_MAX_MB * 1024**2
-
-    # Check image file format
-    FileExtensionValidator(allowed_extensions=settings.IMAGE_VALID_EXTENSIONS)(image)
-
-    # Check image file size
-    if image.size > max_size_bytes:
-        raise CoreValidationError(f"Maximum allowed file size is {settings.IMAGE_MAX_MB}MB.")
+def image_validator(file):
+    file_validator(file, settings.IMAGE_MAX_MB, settings.IMAGE_VALID_EXTENSIONS)
 
 
-def video_validator(video):
-    max_size_bytes = settings.VIDEO_MAX_MB * 1024**2
-
-    # Check video file format
-    FileExtensionValidator(allowed_extensions=settings.VIDEO_VALID_EXTENSIONS)(video)
-
-    # Check video file size
-    if video.size > max_size_bytes:
-        raise CoreValidationError(f"Maximum allowed file size is {settings.VIDEO_MAX_MB}MB.")
+def video_validator(file):
+    file_validator(file, settings.VIDEO_MAX_MB, settings.VIDEO_VALID_EXTENSIONS)
 
 
-def file_validator(file):
-    max_size_bytes = settings.FILE_MAX_MB * 1024**2
+def document_validator(file):
+    file_validator(file, settings.DOCUMENT_MAX_MB, settings.DOCUMENT_VALID_EXTENSIONS)
+
+
+def dowload_file_validator(file):
+    file_validator(file, settings.DOWNLOAD_FILE_MAX_MB, settings.DOWNLOAD_FILE_VALID_EXTENSIONS)
+
+
+def file_validator(file, max_size_mb: int, valid_extensions: List[str]):
+    max_size_bytes = max_size_mb * 1024**2
 
     # Check file format
-    FileExtensionValidator(allowed_extensions=settings.FILE_VALID_EXTENSIONS)(file)
+    FileExtensionValidator(allowed_extensions=valid_extensions)(file)
 
     # Check file size
     if file.size > max_size_bytes:
-        raise CoreValidationError(f"Maximum allowed file size is {settings.FILE_MAX_MB}MB.")
+        raise ValidationError(f"Maximum allowed file size is {max_size_mb}MB.")
 
 
 def validate_no_spaces(value):
