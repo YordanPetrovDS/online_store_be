@@ -108,7 +108,7 @@ class OrderViewSetTests(APITestCase):
 
         user_2_data = {
             "username": "Petko",
-            "email": "doncho@abv.bg",
+            "email": "doncho1@abv.bg",
             "password": "Newlife7",
         }
         user_2 = self._create_user_and_login(user_2_data)
@@ -151,7 +151,7 @@ class OrderViewSetTests(APITestCase):
 
         user_2_data = {
             "username": "Petko",
-            "email": "doncho@abv.bg",
+            "email": "doncho1@abv.bg",
             "password": "Newlife7",
         }
         user_2 = self._create_user_and_login(user_2_data)
@@ -230,7 +230,7 @@ class OrderViewSetTests(APITestCase):
         # Arrange
         user_1_data = {
             "username": "Petko",
-            "email": "doncho@abv.bg",
+            "email": "doncho1@abv.bg",
             "password": "Newlife7",
         }
         admin = self._create_user_and_login(self.VALID_USER_DATA, True)
@@ -311,7 +311,7 @@ class OrderViewSetTests(APITestCase):
     ):
         user_1_data = {
             "username": "Petko",
-            "email": "doncho@abv.bg",
+            "email": "doncho1@abv.bg",
             "password": "Newlife7",
         }
         admin = self._create_user_and_login(self.VALID_USER_DATA, True)
