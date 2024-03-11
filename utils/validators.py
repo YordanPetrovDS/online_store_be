@@ -19,7 +19,7 @@ def document_validator(file):
     file_validator(file, settings.DOCUMENT_MAX_MB, settings.DOCUMENT_VALID_EXTENSIONS)
 
 
-def dowload_file_validator(file):
+def download_file_validator(file):
     file_validator(file, settings.DOWNLOAD_FILE_MAX_MB, settings.DOWNLOAD_FILE_VALID_EXTENSIONS)
 
 
@@ -42,7 +42,7 @@ def validate_no_spaces(value):
 def validate_query_param(params: list, request, possible_choices: list = []) -> list:
     param_value_list = []
     for param in params:
-        # Check if paramater exists
+        # Check if parameter exists
         try:
             param_value = request.query_params[param]
             param_value_list.append(param_value)

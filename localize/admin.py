@@ -16,9 +16,9 @@ class LanguageAdmin(admin.ModelAdmin):
 
 @admin.register(Currency)
 class CurrencyAdmin(admin.ModelAdmin):
-    list_display = ("title", "code", "sign", "sign_possition")
+    list_display = ("title", "code", "sign", "sign_position")
     search_fields = ("title", "code", "sign")
-    list_filter = ("sign_possition",)
+    list_filter = ("sign_position",)
 
 
 @admin.register(CurrencyRate)

@@ -6,7 +6,7 @@ from common.models import BaseModel
 from utils.validators import image_validator
 
 
-class SignPossitionType(models.TextChoices):
+class SignPositionType(models.TextChoices):
     BEFORE_PRICE = "before_price", _("Before price")
     AFTER_PRICE = "after_price", _("After price")
 
@@ -15,7 +15,7 @@ class Language(BaseModel):
     title = models.CharField(max_length=32)
     code = models.CharField(max_length=2, unique=True)
     icon = models.ImageField(
-        upload_to=settings.LAGUAGES_ICONS_UPLOAD_PREFIX, blank=True, null=True, validators=[image_validator]
+        upload_to=settings.LANGUAGES_ICONS_UPLOAD_PREFIX, blank=True, null=True, validators=[image_validator]
     )
 
     class Meta:
@@ -29,8 +29,8 @@ class Currency(BaseModel):
     title = models.CharField(max_length=32)
     code = models.CharField(max_length=3, unique=True)
     sign = models.CharField(max_length=8, unique=True)
-    sign_possition = models.CharField(
-        max_length=32, choices=SignPossitionType.choices, default=SignPossitionType.BEFORE_PRICE
+    sign_position = models.CharField(
+        max_length=32, choices=SignPositionType.choices, default=SignPositionType.BEFORE_PRICE
     )
 
     class Meta:
