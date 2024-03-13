@@ -4,6 +4,8 @@ from django.core import exceptions
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
+from accounts.models import Profile, UserAddress, UserReview, UserWishlist
+
 UserModel = get_user_model()
 
 
@@ -42,3 +44,27 @@ class CreateUserSerializer(serializers.ModelSerializer):
         token = Token.objects.get(user=instance)
         result["token"] = token.key
         return result
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = "__all__"
+
+
+class UserAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserAddress
+        fields = "__all__"
+
+
+class UserWishlistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserWishlist
+        fields = "__all__"
+
+
+class UserReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserReview
+        fields = "__all__"

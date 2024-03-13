@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -67,3 +68,36 @@ class UserAddress(BaseModel):
 
     def __str__(self):
         return f"{self.country}, {self.city}, {self.address}"
+
+
+class UserWishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishlists", verbose_name=_("user"))
+    product = models.ForeignKey(
+        "catalog.Product", on_delete=models.CASCADE, related_name="wishlists", verbose_name=_("product")
+    )
+    has_notifications = models.BooleanField(default=True, verbose_name=_("has notifications"))
+
+    class Meta:
+        verbose_name = _("user wishlist")
+        verbose_name_plural = _("user wishlists")
+        constraints = [models.UniqueConstraint(fields=["user", "product"], name="unique_user_product_wishlist")]
+
+    def __str__(self):
+        return f"{self.user.full_name} - {self.product.sku}"
+
+
+class UserReview(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews", verbose_name=_("user"))
+    product = models.ForeignKey(
+        "catalog.Product", on_delete=models.CASCADE, related_name="reviews", verbose_name=_("product")
+    )
+    rate = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], verbose_name=_("rate"))
+    review = models.TextField(verbose_name=_("review"))
+    is_approved = models.BooleanField(default=False, verbose_name=_("is approved"))
+
+    class Meta:
+        verbose_name = _("user review")
+        verbose_name_plural = _("user reviews")
+
+    def __str__(self):
+        return f"Review by {self.user.username} on {self.product.sku}"
