@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('title', models.CharField(max_length=128)),
-                ('file', models.FileField(upload_to='products_downloads', validators=[utils.validators.dowload_file_validator])),
+                ('file', models.FileField(upload_to='products_downloads', validators=[utils.validators.download_file_validator])),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='downloads', to='catalog.product')),
             ],
             options={

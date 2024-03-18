@@ -162,6 +162,10 @@ STATICFILES_DIRS = [(BASE_DIR / "assets")]
 MEDIA_ROOT = BASE_DIR / "media/"
 MEDIA_URL = "/media/"
 
+# User model
+AUTH_USER_MODEL = "accounts.User"
+
+# CKEditor settings
 CKEDITOR_UPLOAD_PATH = "ckeditor/"  # Ckeditor uses AWS, see AWS_LOCATION
 CKEDITOR_CONFIG_DEFAULT = "default"
 CKEDITOR_CONFIG_SMALL = "small"
@@ -296,6 +300,6 @@ PRODUCTS_IMAGES_UPLOAD_PREFIX = "products_images"
 PRODUCTS_VIDEOS_UPLOAD_PREFIX = "products_videos"
 PRODUCTS_DOCUMENTS_UPLOAD_PREFIX = "products_documents"
 PRODUCTS_DOWNLOADS_UPLOAD_PREFIX = "products_downloads"
-LAGUAGES_ICONS_UPLOAD_PREFIX = "languages_icons"
+LANGUAGES_ICONS_UPLOAD_PREFIX = "languages_icons"
 STORE_LOGOS_UPLOAD_PREFIX = "stores_logos"
 STORE_LOCATIONS_IMAGES_UPLOAD_PREFIX = "stores_locations_images"

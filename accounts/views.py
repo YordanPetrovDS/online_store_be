@@ -4,11 +4,20 @@ from rest_framework import authentication
 from rest_framework import generics as api_generic_views
 from rest_framework import permissions, status
 from rest_framework import views as api_views
+from rest_framework import viewsets
 from rest_framework.authtoken import views as auth_views
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 
-from .serializers import CreateUserSerializer
+from accounts.models import Profile, UserAddress, UserReview, UserWishlist
+
+from .serializers import (
+    CreateUserSerializer,
+    ProfileSerializer,
+    UserAddressSerializer,
+    UserReviewSerializer,
+    UserWishlistSerializer,
+)
 
 UserModel = get_user_model()
 
@@ -56,3 +65,23 @@ class LogoutView(api_views.APIView):
 
     def post(self, request):
         return self.__perform_logout(request)
+
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+
+class UserAddressViewSet(viewsets.ModelViewSet):
+    queryset = UserAddress.objects.all()
+    serializer_class = UserAddressSerializer
+
+
+class UserWishlistViewSet(viewsets.ModelViewSet):
+    queryset = UserWishlist.objects.all()
+    serializer_class = UserWishlistSerializer
+
+
+class UserReviewViewSet(viewsets.ModelViewSet):
+    queryset = UserReview.objects.all()
+    serializer_class = UserReviewSerializer

@@ -9,11 +9,12 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 
+from accounts.models import User
 from cms.models import Page
 from common.models import BaseModel, TinifiedImageField
 from utils.validators import (
     document_validator,
-    dowload_file_validator,
+    download_file_validator,
     image_validator,
     video_validator,
 )
@@ -151,7 +152,7 @@ class ProductAttributeOption(BaseModel):
 
 class Order(BaseModel):
     date = models.DateField(default=datetime.date.today)
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"id: {self.id} date: {self.date} - user: {self.user}"
@@ -186,7 +187,7 @@ class DiscountCode(BaseModel):
     valid_from = models.DateTimeField()
     valid_until = models.DateTimeField()
     allowed_user = models.ForeignKey(
-        UserModel,
+        User,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -273,7 +274,7 @@ class Promotion(BaseModel):
 class ProductDownload(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="downloads")
     title = models.CharField(max_length=128)
-    file = models.FileField(upload_to=settings.PRODUCTS_DOWNLOADS_UPLOAD_PREFIX, validators=[dowload_file_validator])
+    file = models.FileField(upload_to=settings.PRODUCTS_DOWNLOADS_UPLOAD_PREFIX, validators=[download_file_validator])
 
     def __str__(self):
         return self.title

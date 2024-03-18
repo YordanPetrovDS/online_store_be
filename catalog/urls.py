@@ -1,5 +1,5 @@
 from django.urls import include, path
-from rest_framework import routers
+from rest_framework.routers import DefaultRouter
 
 from catalog.views import (
     AttributeOptionViewSet,
@@ -18,7 +18,7 @@ from catalog.views import (
     PromotionViewSet,
 )
 
-router = routers.DefaultRouter()
+router = DefaultRouter()
 router.register(r"products", ProductViewSet, basename="products")
 router.register(r"orders", OrderViewSet, basename="orders")
 router.register(r"order-product", OrderProductViewSet, basename="order-product")
