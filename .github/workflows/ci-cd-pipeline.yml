@@ -69,4 +69,3 @@ jobs:
                   key: ${{ secrets.SSH_PRIV_KEY }}
                   port: ${{ secrets.PORT }}
                   script: cd ~/online_store_be && bash pull_restart.sh
-                  debug: true
