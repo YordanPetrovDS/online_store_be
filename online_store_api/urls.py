@@ -13,6 +13,7 @@ urlpatterns = [
     path("api/geo/", include("geo.urls"), name="geo"),
     path("api/localize/", include("localize.urls"), name="localize"),
     path("api/stores/", include("stores.urls"), name="stores"),
+    path("api/newsletter/", include("newsletter.urls"), name="newsletter"),
     path("ckeditor/", include("ckeditor_uploader.urls"), name="ckeditor_uploader"),
 ]
 
