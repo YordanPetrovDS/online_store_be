@@ -1,4 +1,3 @@
-# Register your models here.
 from adminsortable2.admin import (
     SortableAdminBase,
     SortableAdminMixin,
@@ -6,6 +5,7 @@ from adminsortable2.admin import (
 )
 from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin, TranslationStackedInline
+from unfold.admin import ModelAdmin
 
 from cms.models import Banner, Page, Paragraph
 from common.admin import IsActiveColumnMixin
@@ -20,7 +20,7 @@ class BannerTabularInline(SortableTabularInline):
 
 
 @admin.register(Page)
-class PageAdmin(IsActiveColumnMixin, SortableAdminBase, TranslationAdmin):
+class PageAdmin(IsActiveColumnMixin, SortableAdminBase, TranslationAdmin, ModelAdmin):
     list_display = ("slug", "title", "is_published")
     list_per_page = 20
     search_fields = ("slug", "title")
@@ -28,6 +28,6 @@ class PageAdmin(IsActiveColumnMixin, SortableAdminBase, TranslationAdmin):
 
 
 @admin.register(Banner)
-class BannerAdmin(IsActiveColumnMixin, SortableAdminMixin, admin.ModelAdmin):
+class BannerAdmin(IsActiveColumnMixin, SortableAdminMixin, ModelAdmin):
     list_display = ("__str__", "page", "is_active")
     list_per_page = 20

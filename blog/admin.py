@@ -1,19 +1,20 @@
 from adminsortable2.admin import SortableAdminMixin
 from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin
+from unfold.admin import ModelAdmin
 
 from blog.models import Article, ArticleCategory, ArticleTag
 from common.admin import IsActiveColumnMixin
 
 
 @admin.register(ArticleCategory)
-class ArticleCategoryAdmin(IsActiveColumnMixin, SortableAdminMixin, TranslationAdmin):
+class ArticleCategoryAdmin(IsActiveColumnMixin, SortableAdminMixin, TranslationAdmin, ModelAdmin):
     list_display = ("__str__", "is_active")
     list_per_page = 20
 
 
 @admin.register(Article)
-class ArticleAdmin(IsActiveColumnMixin, TranslationAdmin):
+class ArticleAdmin(IsActiveColumnMixin, TranslationAdmin, ModelAdmin):
     list_display = (
         "slug",
         "title",
@@ -28,6 +29,6 @@ class ArticleAdmin(IsActiveColumnMixin, TranslationAdmin):
 
 
 @admin.register(ArticleTag)
-class ArticleTagAdmin(admin.ModelAdmin):
+class ArticleTagAdmin(ModelAdmin):
     list_display = ("name", "slug")
     prepopulated_fields = {"slug": ("name",)}

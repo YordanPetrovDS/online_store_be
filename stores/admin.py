@@ -1,12 +1,13 @@
 from adminsortable2.admin import SortableAdminMixin
 from django.contrib import admin
 from django.utils.html import format_html
+from unfold.admin import ModelAdmin
 
 from stores.models import Store, StoreLocation, StoreSetting
 
 
 @admin.register(Store)
-class StoreAdmin(admin.ModelAdmin):
+class StoreAdmin(ModelAdmin):
     list_display = ("title", "domain", "default_language", "default_currency", "logo_link")
     search_fields = ("title", "domain")
     list_filter = ("default_language", "default_currency")
@@ -18,7 +19,7 @@ class StoreAdmin(admin.ModelAdmin):
 
 
 @admin.register(StoreLocation)
-class StoreLocationAdmin(admin.ModelAdmin):
+class StoreLocationAdmin(ModelAdmin):
     list_display = ("title", "country", "state", "city", "address", "phone", "email", "image_link")
     search_fields = ("title", "address", "phone", "email", "city")
     list_filter = ("country", "state", "city")
@@ -30,7 +31,7 @@ class StoreLocationAdmin(admin.ModelAdmin):
 
 
 @admin.register(StoreSetting)
-class StoreSettingAdmin(SortableAdminMixin, admin.ModelAdmin):
+class StoreSettingAdmin(SortableAdminMixin, ModelAdmin):
     list_display = ("store", "title", "slug", "is_public")
     list_filter = ("store", "is_public")
     search_fields = ("title", "slug", "store__title")
