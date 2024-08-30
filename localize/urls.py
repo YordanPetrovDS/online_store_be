@@ -3,6 +3,8 @@ from rest_framework import routers
 
 from localize.views import CurrencyRateViewSet, CurrencyViewSet, LanguageViewSet
 
+app_name = "localize"
+
 router = routers.DefaultRouter()
 router.register(r"languages", LanguageViewSet, basename="languages")
 router.register(r"currencies", CurrencyViewSet, basename="currencies")
