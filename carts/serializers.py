@@ -35,13 +35,18 @@ class CartSerializer(serializers.ModelSerializer):
 class AddProductToCartSerializer(serializers.Serializer):
     product_id = serializers.IntegerField()
     quantity = serializers.IntegerField(min_value=1, default=1)
-    currency = serializers.CharField(required=False, allow_blank=True)
     hash = serializers.CharField(required=False, allow_blank=True)
     options = CartProductOptionSerializer(many=True, required=False)
+    currency_code = serializers.CharField(max_length=3)
 
     def validate_product_id(self, value):
         if not Product.objects.filter(id=value).exists():
             raise serializers.ValidationError("Product does not exist.")
+        return value
+
+    def validate_currency_code(self, value):
+        if value and not Currency.objects.filter(code=value).exists():
+            raise serializers.ValidationError("Invalid currency code.")
         return value
 
     def create(self, validated_data):
@@ -50,26 +55,29 @@ class AddProductToCartSerializer(serializers.Serializer):
         product_id = validated_data["product_id"]
         quantity = validated_data["quantity"]
         options_data = validated_data.get("options", [])
-        currency = validated_data.get("currency")
+        currency_code = validated_data.get("currency_code")
+
+        # Determine the currency based on the provided currency code
+        currency = Currency.objects.get(code=currency_code)
 
         # Retrieve or create the Cart object
         if user:
             # For logged-in users
-            cart, created = Cart.objects.get_or_create(customer=user, defaults={"currency": currency})
+            cart, _ = Cart.objects.get_or_create(customer=user, defaults={"currency": currency})
         else:
             # For guest users
             if cart_hash:
                 cart = Cart.objects.filter(hash=cart_hash, customer__isnull=True).first()
                 if not cart:
-                    cart = Cart.objects.create(currency=Currency.objects.get(code="USD"))  # Default currency
+                    cart = Cart.objects.create(currency=currency)
             else:
                 # Creating a new cart for guest users
-                cart = Cart.objects.create(currency=Currency.objects.get(code="USD"))  # Default currency
+                cart = Cart.objects.create(currency=currency)
 
         # Retrieve the Product object
         product = Product.objects.get(id=product_id)
 
-        # Add or update the CartProduct
+        # Get or Create the CartProduct
         cart_product, created = CartProduct.objects.get_or_create(
             cart=cart,
             product=product,
@@ -80,6 +88,8 @@ class AddProductToCartSerializer(serializers.Serializer):
                 "quantity": quantity,
             },
         )
+
+        # Update the quantity if the CartProduct already exists
         if not created:
             cart_product.quantity += quantity
             cart_product.save()
@@ -94,5 +104,54 @@ class AddProductToCartSerializer(serializers.Serializer):
                 price_change_type=attribute_option.price_change_type,
                 price_change_amount=attribute_option.price_change_amount,
             )
+
+        return cart
+
+
+class ModifyCartSerializer(serializers.Serializer):
+    hash = serializers.CharField(required=False, allow_blank=True)
+    product_id = serializers.IntegerField()
+    quantity = serializers.IntegerField(required=False, min_value=0)
+    currency_code = serializers.CharField(required=False, max_length=3)
+
+    def validate_product_id(self, value):
+        if not Product.objects.filter(id=value).exists():
+            raise serializers.ValidationError("Product does not exist.")
+        return value
+
+    def validate_currency_code(self, value):
+        if value and not Currency.objects.filter(code=value).exists():
+            raise serializers.ValidationError("Invalid currency code.")
+        return value
+
+    def update_cart(self, user):
+        hash = self.validated_data.get("hash")
+        product_id = self.validated_data.get("product_id")
+        quantity = self.validated_data.get("quantity")
+        currency_code = self.validated_data.get("currency_code")
+
+        # Determine the currency based on the provided currency code
+        currency = Currency.objects.get(code=currency_code)
+
+        if user.is_authenticated:
+            # Retrieve or create cart for authenticated users
+            cart, _ = Cart.objects.get_or_create(customer=user, defaults={"currency": currency})
+        else:
+            # Handle guest user carts based on the hash
+            cart = Cart.objects.filter(hash=hash, customer__isnull=True).first()
+            if not cart:
+                cart = cart = Cart.objects.create(currency=currency)
+
+        # Retrieve the Product
+        product = Product.objects.get(id=product_id)
+        # Get or create the CartProduct
+        cart_product, _ = CartProduct.objects.get_or_create(cart=cart, product=product)
+
+        # Update the quantity or delete the CartProduct
+        if quantity == 0:
+            cart_product.delete()
+        else:
+            cart_product.quantity = quantity
+            cart_product.save()
 
         return cart
