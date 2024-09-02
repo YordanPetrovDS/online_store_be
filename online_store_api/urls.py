@@ -14,6 +14,8 @@ urlpatterns = [
     path("api/localize/", include("localize.urls"), name="localize"),
     path("api/stores/", include("stores.urls"), name="stores"),
     path("api/newsletter/", include("newsletter.urls"), name="newsletter"),
+    path("api/taxes/", include(("taxes.urls", "taxes"), namespace="taxes")),
+    path("api/shipping-methods/", include(("shipping_methods.urls", "shipping_methods"), namespace="shipping_methods")),
     path("ckeditor/", include("ckeditor_uploader.urls"), name="ckeditor_uploader"),
 ]
 
