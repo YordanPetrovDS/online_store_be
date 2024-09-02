@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.response import Response
@@ -6,11 +7,16 @@ from rest_framework.views import APIView
 from carts.models import Cart
 from carts.serializers import (
     AddProductToCartSerializer,
+    CartHashResponseSerializer,
     CartSerializer,
     ModifyCartSerializer,
 )
 
 
+@extend_schema(
+    request=AddProductToCartSerializer,
+    responses={200: CartHashResponseSerializer},
+)
 class AddProductToCartView(CreateAPIView):
     """
     CreateAPIView to handle adding a product to the cart.
@@ -29,6 +35,10 @@ class AddProductToCartView(CreateAPIView):
         return Response({"hash": cart.hash}, status=status.HTTP_200_OK)
 
 
+@extend_schema(
+    request=ModifyCartSerializer,
+    responses={200: CartSerializer},
+)
 class ModifyCartView(APIView):
     """
     API View to handle adding, updating, and removing products from the cart.

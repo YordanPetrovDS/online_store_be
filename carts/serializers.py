@@ -10,6 +10,10 @@ from carts.models import (
 from localize.models import Currency
 
 
+class CartHashResponseSerializer(serializers.Serializer):
+    hash = serializers.CharField(max_length=16)
+
+
 class CartProductOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartProductOption

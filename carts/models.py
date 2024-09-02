@@ -32,7 +32,7 @@ class CartProduct(models.Model):
     def save(self, *args, **kwargs):
         # Copy product details for historical record
         if not self.pk:
-            self.product_title = self.product.name
+            self.product_title = self.product.title
             self.product_sku = self.product.sku
             self.product_price = self.product.price
         super().save(*args, **kwargs)
