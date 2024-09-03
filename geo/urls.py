@@ -3,6 +3,8 @@ from rest_framework import routers
 
 from geo.views import CountryViewSet, RegionViewSet, StateViewSet
 
+app_name = "geo"
+
 router = routers.DefaultRouter()
 router.register(r"regions", RegionViewSet, basename="regions")
 router.register(r"countries", CountryViewSet, basename="countries")

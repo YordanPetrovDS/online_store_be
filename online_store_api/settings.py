@@ -58,6 +58,7 @@ PROJECT_APPS = (
     "localize",
     "stores",
     "newsletter",
+    "carts",
     "shipping_methods",
 )
 

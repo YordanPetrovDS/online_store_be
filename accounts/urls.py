@@ -11,6 +11,8 @@ from accounts.views import (
     UserWishlistViewSet,
 )
 
+app_name = "accounts"
+
 router = DefaultRouter()
 router.register(r"profiles", ProfileViewSet, basename="profiles")
 router.register(r"user-addresses", UserAddressViewSet, basename="user-addresses")
