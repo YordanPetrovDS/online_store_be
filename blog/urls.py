@@ -3,6 +3,8 @@ from rest_framework.routers import DefaultRouter
 
 from blog import views
 
+app_name = "blog"
+
 router = DefaultRouter()
 router.register(r"article-tags", views.ArticleTagViewSet)
 

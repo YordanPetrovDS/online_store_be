@@ -3,6 +3,8 @@ from rest_framework import routers
 
 from stores.views import StoreLocationViewSet, StoreSettingViewSet, StoreViewSet
 
+app_name = "stores"
+
 router = routers.DefaultRouter()
 router.register(r"stores", StoreViewSet, basename="stores")
 router.register(r"store-locations", StoreLocationViewSet, basename="store_locations")

@@ -18,6 +18,8 @@ from catalog.views import (
     PromotionViewSet,
 )
 
+app_name = "catalog"
+
 router = DefaultRouter()
 router.register(r"products", ProductViewSet, basename="products")
 router.register(r"orders", OrderViewSet, basename="orders")

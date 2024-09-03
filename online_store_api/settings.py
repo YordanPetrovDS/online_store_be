@@ -42,6 +42,7 @@ THIRD_PARTY_APPS = (
     "drf_yasg",
     "ckeditor",
     "ckeditor_uploader",
+    "django_ckeditor_youtube_plugin",
     "adminsortable2",
     "mptt",
 )
@@ -56,6 +57,7 @@ PROJECT_APPS = (
     "localize",
     "stores",
     "newsletter",
+    "carts",
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
@@ -230,7 +232,7 @@ CKEDITOR_CONFIGS = {
 ckeditor__external_plugin_resources = [
     (
         "youtube",
-        "/static/ckeditor/youtube/",
+        "/static/ckeditor/ckeditor/plugins/youtube/",
         "plugin.js",
     )
 ]
