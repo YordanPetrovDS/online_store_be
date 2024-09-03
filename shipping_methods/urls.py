@@ -6,7 +6,7 @@ from shipping_methods.views import ShippingMethodViewSet
 app_name = "shipping_methods"
 
 router = DefaultRouter()
-router.register(r"shipping-methods", ShippingMethodViewSet, basename="shipping_methods")
+router.register(r"shipping-method", ShippingMethodViewSet, basename="shipping_method")
 
 urlpatterns = [
     path("", include(router.urls)),
