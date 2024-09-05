@@ -70,6 +70,7 @@ class ProductCategory(BaseModel, MPTTModel):
     title = models.CharField(max_length=100, unique=True)
     parent = TreeForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="children")
     attributes = models.ManyToManyField(Attribute, related_name="categories", blank=True)
+    tax_groups = models.ManyToManyField("taxes.TaxGroup", related_name="categories", blank=True)
 
     class MPTTMeta:
         order_insertion_by = ["title"]
@@ -92,6 +93,7 @@ class Product(Page):
     sku = models.CharField(max_length=128, unique=True, blank=True, null=True)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="products", blank=True, null=True)
     categories = models.ManyToManyField(ProductCategory, related_name="products", blank=True)
+    tax_groups = models.ManyToManyField("taxes.TaxGroup", related_name="products", blank=True)
 
     class Meta:
         ordering = ["id"]

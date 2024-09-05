@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 from mptt.admin import MPTTModelAdmin
 from rangefilter.filters import DateRangeFilter, NumericRangeFilter
-from unfold.admin import ModelAdmin
+from unfold.admin import ModelAdmin, TabularInline
 
 from catalog.models import (
     Attribute,
@@ -57,14 +57,46 @@ class ProductListFilter(admin.SimpleListFilter):
         return queryset
 
 
+class ProductTaxGroupsInline(TabularInline):
+    model = Product.tax_groups.through
+    extra = 1
+
+
+class ProductCategoriesInline(TabularInline):
+    model = Product.categories.through
+    extra = 1
+
+
 @admin.register(Product)
 class ProductAdmin(ModelAdmin):
-    list_display = ("title", "price", "stock", "created_at", "updated_at")
+    list_display = (
+        "title",
+        "price",
+        "stock",
+        "description",
+        "sku",
+        "brand",
+        "display_categories",
+        "display_tax_groups",
+        "created_at",
+        "updated_at",
+    )
     list_filter = (
         ("price", NumericRangeFilter),
         ("stock", NumericRangeFilter),
     )
     search_fields = ("title",)
+    inlines = [ProductCategoriesInline, ProductTaxGroupsInline]
+
+    def display_categories(self, obj):
+        return ", ".join([category.title for category in obj.categories.all()])
+
+    display_categories.short_description = "Categories"
+
+    def display_tax_groups(self, obj):
+        return ", ".join([tax_group.title for tax_group in obj.tax_groups.all()])
+
+    display_tax_groups.short_description = "Tax Groups"
 
 
 @admin.register(Order)
@@ -94,18 +126,28 @@ class ProductCategoryAttributesInline(admin.TabularInline):
     extra = 1
 
 
+class ProductCategoryTaxGroupsInline(TabularInline):
+    model = ProductCategory.tax_groups.through
+    extra = 1
+
+
 @admin.register(ProductCategory)
 class ProductCategoryAdmin(MPTTModelAdmin, ModelAdmin):
-    list_display = ("title", "parent", "display_attributes")
+    list_display = ("title", "parent", "display_attributes", "display_tax_groups")
     search_fields = ("title",)
     mptt_level_indent = 20
     list_filter = ("parent",)
-    inlines = [ProductCategoryAttributesInline]
+    inlines = [ProductCategoryAttributesInline, ProductCategoryTaxGroupsInline]
 
     def display_attributes(self, obj):
         return ", ".join([attribute.title for attribute in obj.attributes.all()])
 
     display_attributes.short_description = "Attributes"
+
+    def display_tax_groups(self, obj):
+        return ", ".join([tax_group.title for tax_group in obj.tax_groups.all()])
+
+    display_tax_groups.short_description = "Tax Groups"
 
 
 @admin.register(Attribute)

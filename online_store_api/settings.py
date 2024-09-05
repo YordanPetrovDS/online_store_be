@@ -50,6 +50,7 @@ THIRD_PARTY_APPS = (
 PROJECT_APPS = (
     "accounts",
     "cms",
+    "taxes",
     "catalog",
     "utils",
     "blog",
@@ -58,6 +59,7 @@ PROJECT_APPS = (
     "stores",
     "newsletter",
     "carts",
+    "shipping_methods",
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
