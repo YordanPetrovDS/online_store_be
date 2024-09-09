@@ -60,6 +60,8 @@ PROJECT_APPS = (
     "newsletter",
     "carts",
     "shipping_methods",
+    "orders",
+    "payments_methods",
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
@@ -306,12 +308,3 @@ DOWNLOAD_FILE_VALID_EXTENSIONS = (
 # WebP, JPEG or PNG images compression
 TINIFY_API_KEY = config("TINIFY_API_KEY", default="")
 TINIFY_COMPRESSION_ENABLED = config("TINIFY_COMPRESSION_ENABLED", cast=bool, default=False)
-
-# Subdirectories (=prefixes in S3) for files upload
-PRODUCTS_IMAGES_UPLOAD_PREFIX = "products_images"
-PRODUCTS_VIDEOS_UPLOAD_PREFIX = "products_videos"
-PRODUCTS_DOCUMENTS_UPLOAD_PREFIX = "products_documents"
-PRODUCTS_DOWNLOADS_UPLOAD_PREFIX = "products_downloads"
-LANGUAGES_ICONS_UPLOAD_PREFIX = "languages_icons"
-STORE_LOGOS_UPLOAD_PREFIX = "stores_logos"
-STORE_LOCATIONS_IMAGES_UPLOAD_PREFIX = "stores_locations_images"

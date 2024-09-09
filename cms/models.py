@@ -2,6 +2,7 @@ from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 
 from common.models import BaseModel
+from utils.functions import get_upload_path
 from utils.validators import image_validator, validate_no_spaces, video_validator
 
 
@@ -10,7 +11,7 @@ class Page(BaseModel):
     title = models.CharField(max_length=256)
     is_published = models.BooleanField(default=False)
     custom_javascript = models.TextField(blank=True)
-    og_image = models.ImageField(blank=True, null=True, validators=[image_validator])
+    og_image = models.ImageField(upload_to=get_upload_path, blank=True, null=True, validators=[image_validator])
     content = RichTextUploadingField(blank=True)
 
     # Meta fields for SEO
@@ -26,8 +27,8 @@ class Page(BaseModel):
 class Banner(BaseModel):
     is_active = models.BooleanField(default=False)
     page = models.ForeignKey(Page, on_delete=models.PROTECT, related_name="banners")
-    image = models.ImageField(blank=True, null=True, validators=[image_validator])
-    video = models.FileField(blank=True, null=True, validators=[video_validator])
+    image = models.ImageField(upload_to=get_upload_path, blank=True, null=True, validators=[image_validator])
+    video = models.FileField(upload_to=get_upload_path, blank=True, null=True, validators=[video_validator])
     url = models.URLField(max_length=256, blank=True, null=True)
     sort_order = models.PositiveIntegerField(default=0, blank=False, null=False)
 
@@ -41,7 +42,7 @@ class Banner(BaseModel):
 class Paragraph(BaseModel):
     page = models.ForeignKey(to=Page, on_delete=models.CASCADE, related_name="paragraphs")
     title = models.CharField(max_length=256)
-    image = models.ImageField(blank=True, null=True, validators=[image_validator])
+    image = models.ImageField(upload_to=get_upload_path, blank=True, null=True, validators=[image_validator])
     content = RichTextUploadingField(blank=True, config_name="small")
     sort_order = models.PositiveIntegerField(default=0, blank=False, null=False)
 

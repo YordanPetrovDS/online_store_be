@@ -6,6 +6,7 @@ from django.db.models.fields.files import ImageFieldFile
 from django.utils import timezone
 from tinify import Source, tinify
 
+from utils.functions import delete_old_file
 from utils.logging import log_error
 
 
@@ -36,6 +37,17 @@ class BaseModel(models.Model):
     def restore_from_soft_deleted(self):
         self.deleted_at = None
         self.save()
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            for field in self._meta.fields:
+                if isinstance(field, (models.FileField, models.ImageField)):
+                    # Delete the old file from storage if it exists
+                    try:
+                        delete_old_file(self, field.name)
+                    except Exception as e:
+                        log_error(f"Error deleting old file: {e}")
+        super().save(*args, **kwargs)
 
     class Meta:
         abstract = True

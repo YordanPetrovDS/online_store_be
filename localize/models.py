@@ -1,8 +1,8 @@
-from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from common.models import BaseModel
+from utils.functions import get_upload_path
 from utils.validators import image_validator
 
 
@@ -14,9 +14,7 @@ class SignPositionType(models.TextChoices):
 class Language(BaseModel):
     title = models.CharField(max_length=32)
     code = models.CharField(max_length=2, unique=True)
-    icon = models.ImageField(
-        upload_to=settings.LANGUAGES_ICONS_UPLOAD_PREFIX, blank=True, null=True, validators=[image_validator]
-    )
+    icon = models.ImageField(upload_to=get_upload_path, blank=True, null=True, validators=[image_validator])
 
     class Meta:
         ordering = ["id"]

@@ -17,6 +17,7 @@ urlpatterns = [
     path("api/carts/", include(("carts.urls", "carts"), namespace="carts")),
     path("api/taxes/", include(("taxes.urls", "taxes"), namespace="taxes")),
     path("api/shipping-methods/", include(("shipping_methods.urls", "shipping_methods"), namespace="shipping_methods")),
+    path("api/orders/", include(("orders.urls", "orders"), namespace="orders")),
     path("ckeditor/", include("ckeditor_uploader.urls"), name="ckeditor_uploader"),
 ]
 

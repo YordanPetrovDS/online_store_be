@@ -1,7 +1,6 @@
 import datetime
 
 from ckeditor_uploader.fields import RichTextUploadingField
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -12,6 +11,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 from accounts.models import User
 from cms.models import Page
 from common.models import BaseModel, TinifiedImageField
+from utils.functions import get_upload_path
 from utils.validators import (
     document_validator,
     download_file_validator,
@@ -225,18 +225,8 @@ class DiscountCode(BaseModel):
 
 class ProductMultimedia(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="multimedia")
-    image = TinifiedImageField(
-        upload_to=settings.PRODUCTS_IMAGES_UPLOAD_PREFIX,
-        blank=True,
-        null=True,
-        validators=[image_validator],
-    )
-    video = models.FileField(
-        upload_to=settings.PRODUCTS_VIDEOS_UPLOAD_PREFIX,
-        blank=True,
-        null=True,
-        validators=[video_validator],
-    )
+    image = TinifiedImageField(upload_to=get_upload_path, blank=True, null=True, validators=[image_validator])
+    video = models.FileField(upload_to=get_upload_path, blank=True, null=True, validators=[video_validator])
 
     def __str__(self):
         return f"{self.product.title}"
@@ -248,7 +238,7 @@ class ProductMultimedia(BaseModel):
 class ProductDocument(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="documents")
     title = models.CharField(_("Title"), max_length=128)
-    file = models.FileField(upload_to=settings.PRODUCTS_DOCUMENTS_UPLOAD_PREFIX, validators=[document_validator])
+    file = models.FileField(upload_to=get_upload_path, validators=[document_validator])
 
     class Meta:
         ordering = ["id"]
@@ -276,7 +266,7 @@ class Promotion(BaseModel):
 class ProductDownload(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="downloads")
     title = models.CharField(max_length=128)
-    file = models.FileField(upload_to=settings.PRODUCTS_DOWNLOADS_UPLOAD_PREFIX, validators=[download_file_validator])
+    file = models.FileField(upload_to=get_upload_path, validators=[download_file_validator])
 
     def __str__(self):
         return self.title
