@@ -80,12 +80,12 @@ class Order(BaseModel):
         verbose_name_plural = "Orders"
 
     def __str__(self):
-        return f"Order #{self.id} for {self.customer_first_name} {self.customer_last_name}"
+        return f"Order #{self.pk} for {self.customer_first_name} {self.customer_last_name}"
 
 
 class OrderProduct(BaseModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order_products")
-    tax_groups = models.ManyToManyField(TaxGroup, blank=True, related_name="order_products")
+    tax_groups = models.ManyToManyField(TaxGroup, related_name="order_products")
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, related_name="order_products")
     product_title = models.CharField(max_length=255)
     product_sku = models.CharField(max_length=64)
@@ -106,3 +106,72 @@ class OrderProduct(BaseModel):
 
     def __str__(self):
         return f"{self.product_title} ({self.quantity})"
+
+
+class StatusType(models.TextChoices):
+    PENDING = "pending", "Pending"
+    SUCCESS = "success", "Success"
+    FAIL = "fail", "Fail"
+
+
+class OrderQuote(BaseModel):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order_quotes")
+    payment_method = models.ForeignKey(
+        "payments_methods.PaymentMethod", on_delete=models.SET_NULL, null=True, related_name="order_quotes"
+    )
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.CharField(max_length=512)
+    expiration_date_time = models.DateTimeField(null=True, blank=True)
+    transaction_date_time = models.DateTimeField(null=True, blank=True)
+    transaction_number = models.CharField(max_length=128, blank=True)
+    transaction_error = models.TextField(blank=True)
+    status = models.CharField(max_length=7, choices=StatusType.choices, default=StatusType.PENDING)
+
+    class Meta:
+        verbose_name = "Order Quote"
+        verbose_name_plural = "Order Quotes"
+
+    def __str__(self):
+        return f"Order Quote for {self.order} - {self.status}"
+
+
+class OrderStatusChange(BaseModel):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="status_changes")
+    status = models.ForeignKey(OrderStatus, on_delete=models.CASCADE, related_name="status_changes")
+    admin = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="status_changes")
+    notes = models.TextField()
+
+    class Meta:
+        verbose_name = "Order Status Change"
+        verbose_name_plural = "Order Status Changes"
+        ordering = ["-id"]
+
+    def __str__(self):
+        return (
+            f"Order {self.order.pk} status changed to {self.status.title}"
+            f" by {self.admin.username if self.admin else 'System'}"
+        )
+
+
+class OrderTotalType(models.TextChoices):
+    SUBTOTAL = "subtotal", "Subtotal"
+    TAX = "tax", "Tax"
+    SHIPPING = "shipping", "Shipping"
+    DISCOUNT = "discount", "Discount"
+    TOTAL = "total", "Total"
+
+
+class OrderTotal(BaseModel):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order_totals")
+    title = models.CharField(max_length=64)
+    type = models.CharField(max_length=16, choices=OrderTotalType.choices, default=OrderTotalType.SUBTOTAL)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    sort_order = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ["sort_order"]
+        verbose_name = "Order Total"
+        verbose_name_plural = "Order Totals"
+
+    def __str__(self):
+        return f"{self.title} ({self.amount})"

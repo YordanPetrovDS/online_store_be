@@ -1,7 +1,14 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
 
-from orders.models import Order, OrderProduct, OrderStatus
+from orders.models import (
+    Order,
+    OrderProduct,
+    OrderQuote,
+    OrderStatus,
+    OrderStatusChange,
+    OrderTotal,
+)
 
 
 @admin.register(OrderStatus)
@@ -23,3 +30,24 @@ class OrderProductAdmin(ModelAdmin):
     list_display = ("order", "product_title", "product_sku", "product_price", "quantity")
     search_fields = ("product_title", "product_sku")
     list_filter = ("order", "product_title")
+
+
+@admin.register(OrderQuote)
+class OrderQuoteAdmin(ModelAdmin):
+    list_display = ("order", "payment_method", "total", "status", "transaction_date_time")
+    search_fields = ("order__id", "transaction_number", "payment_method__title")
+    list_filter = ("status", "payment_method")
+
+
+@admin.register(OrderStatusChange)
+class OrderStatusChangeAdmin(ModelAdmin):
+    list_display = ("order", "status", "admin", "notes")
+    search_fields = ("order__id", "status__title", "admin__username")
+    list_filter = ("status", "admin")
+
+
+@admin.register(OrderTotal)
+class OrderTotalAdmin(ModelAdmin):
+    list_display = ("order", "title", "type", "amount", "sort_order")
+    search_fields = ("order__id", "title")
+    list_filter = ("type",)

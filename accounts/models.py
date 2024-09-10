@@ -70,7 +70,7 @@ class UserAddress(BaseModel):
         return f"{self.country}, {self.city}, {self.address}"
 
 
-class UserWishlist(models.Model):
+class UserWishlist(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishlists", verbose_name=_("user"))
     product = models.ForeignKey(
         "catalog.Product", on_delete=models.CASCADE, related_name="wishlists", verbose_name=_("product")
@@ -86,7 +86,7 @@ class UserWishlist(models.Model):
         return f"{self.user.full_name} - {self.product.sku}"
 
 
-class UserReview(models.Model):
+class UserReview(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews", verbose_name=_("user"))
     product = models.ForeignKey(
         "catalog.Product", on_delete=models.CASCADE, related_name="reviews", verbose_name=_("product")

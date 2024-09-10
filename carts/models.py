@@ -4,10 +4,11 @@ from django.db import models
 
 from accounts.models import User
 from catalog.models import PriceChangeType, Product, ProductAttributeOption
+from common.models import BaseModel
 from localize.models import Currency
 
 
-class Cart(models.Model):
+class Cart(BaseModel):
     customer = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
     hash = models.CharField(max_length=16, unique=True, editable=False)
@@ -21,7 +22,7 @@ class Cart(models.Model):
         return f"Cart {self.hash} for {'guest' if not self.customer else self.customer.username}"
 
 
-class CartProduct(models.Model):
+class CartProduct(BaseModel):
     cart = models.ForeignKey(Cart, related_name="products", on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     product_title = models.CharField(max_length=255)
@@ -41,7 +42,7 @@ class CartProduct(models.Model):
         return f"{self.product_title} (x{self.quantity}) in cart {self.cart.hash}"
 
 
-class CartProductOption(models.Model):
+class CartProductOption(BaseModel):
     cart_product = models.ForeignKey(CartProduct, related_name="options", on_delete=models.CASCADE)
     attribute_option = models.ForeignKey(ProductAttributeOption, on_delete=models.CASCADE)
     attribute_option_title = models.CharField(max_length=255)
