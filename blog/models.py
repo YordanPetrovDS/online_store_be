@@ -4,6 +4,7 @@ from django.utils.text import slugify
 
 from cms.models import Page
 from common.models import BaseModel
+from utils.functions import get_upload_path
 from utils.validators import image_validator
 
 
@@ -39,8 +40,8 @@ class ArticleTag(BaseModel):
 
 class Article(Page):
     date = models.DateTimeField(default=timezone.now)
-    image = models.ImageField(blank=True, null=True, validators=[image_validator])
-    banner = models.ImageField(blank=True, null=True, validators=[image_validator])
+    image = models.ImageField(upload_to=get_upload_path, blank=True, null=True, validators=[image_validator])
+    banner = models.ImageField(upload_to=get_upload_path, blank=True, null=True, validators=[image_validator])
     categories = models.ManyToManyField(to=ArticleCategory)
     tags = models.ManyToManyField(ArticleTag, related_name="articles", blank=True)
 

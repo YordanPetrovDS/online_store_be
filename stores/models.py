@@ -1,19 +1,17 @@
-from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from common.models import BaseModel
 from geo.models import Country, State
 from localize.models import Currency, Language
+from utils.functions import get_upload_path
 from utils.validators import image_validator
 
 
 class Store(BaseModel):
     title = models.CharField(max_length=128)
     domain = models.CharField(max_length=128, unique=True)
-    logo = models.ImageField(
-        upload_to=settings.STORE_LOGOS_UPLOAD_PREFIX, blank=True, null=True, validators=[image_validator]
-    )
+    logo = models.ImageField(upload_to=get_upload_path, blank=True, null=True, validators=[image_validator])
     default_language = models.ForeignKey(Language, on_delete=models.CASCADE, related_name="stores")
     default_currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name="stores")
 
@@ -34,9 +32,7 @@ class StoreLocation(BaseModel):
     email = models.EmailField(_("Email"), max_length=64, blank=True)
     gps_latitude = models.FloatField(_("GPS Latitude"), null=True, blank=True)
     gps_longitude = models.FloatField(_("GPS Longitude"), null=True, blank=True)
-    image = models.ImageField(
-        upload_to=settings.STORE_LOCATIONS_IMAGES_UPLOAD_PREFIX, blank=True, null=True, validators=[image_validator]
-    )
+    image = models.ImageField(upload_to=get_upload_path, blank=True, null=True, validators=[image_validator])
 
     class Meta:
         ordering = ["id"]
